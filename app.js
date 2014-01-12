@@ -1,3 +1,5 @@
+var port = 80;
+
 var http = require('http');
 var server = http.createServer(function (request, response) {
     response.writeHead(200, {
@@ -6,5 +8,5 @@ var server = http.createServer(function (request, response) {
     response.end("Hello world");
 })
 
-server.listen(8080);
+server.listen(port);
 console.log("> Server is running.");
