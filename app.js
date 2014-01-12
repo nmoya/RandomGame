@@ -6,5 +6,5 @@ var server = http.createServer(function (request, response) {
     response.end("Hello world");
 })
 
-server.listen(80, "http://moyttioli.herokuapp.com");
+server.listen(8080);
 console.log("> Server is running.");
