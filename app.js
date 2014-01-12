@@ -1,4 +1,4 @@
-var port = 80;
+var port = 5000;
 
 var http = require('http');
 var server = http.createServer(function (request, response) {
@@ -8,5 +8,5 @@ var server = http.createServer(function (request, response) {
     response.end("Hello world");
 })
 
-server.listen(port);
+server.listen(process.env.PORT || port);
 console.log("> Server is running.");
