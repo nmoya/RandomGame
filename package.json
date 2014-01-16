@@ -8,7 +8,7 @@
   },
   "dependencies": {
         "socket.io": "latest",
-        "express": "latest"
+        "express": "3.4.8"
   },
   "repository": {
     "type": "git",
