@@ -2,13 +2,13 @@
   "name": "GGJ",
   "version": "0.0.0",
   "description": "This is a very cool game!",
-  "dependencies": {
-        "socket.io": "latest",
-        "express": "latest"
-    },
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+        "socket.io": "latest",
+        "express": "latest"
   },
   "repository": {
     "type": "git",
