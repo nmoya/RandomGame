@@ -1,44 +1,44 @@
-var port = 5000;
+var port = process.env.PORT || 5000;
 var http = require('http');
 var url = require('url');
-var fsys = require('fs');
+var express = require('express');
+var app = express();
 
-function loadView(viewName) {
-    try {
-        return fsys.readFileSync("views"+viewName)
-    } catch (e) {
-        if (e.code === 'ENOENT') 
-            return "<h1>404. File not found";
-        else
-            return "ABORT ABORT ABORT";
-    }
-}
+//app.use(express.logger());
+app.use(express.static(__dirname + '/public'));
 
-function loadHtml(request, response, path)
-{
-    response.writeHead(200, {
-        "Content-type": 'text/html; charset=utf-8'
-    });
-    response.write("Path: " + path + "<br>");
-    response.end(loadView(path));
-}
+/* serves main page */
+app.get("/", function(req, res) {
+   res.sendfile('index.html')
+});
 
-function game (request, response) {
-    response.writeHead(200, {
-        "Content-type": 'text/html; charset=utf-8'
-    });
-    response.end("This is the game screen");
-}
+/* serves all the static files */
+app.get(/^(.+)$/, function(req, res){ 
+ console.log('static file request : ' + req.params);
+ res.sendfile( __dirname + req.params[0]); 
+});
 
-var server = http.createServer(function (request, response) {
-    var regex = new RegExp("^/game/?$");
-    var curr_path = url.parse(request.url).pathname;
-    if (regex.test(curr_path)) {
-        game(request, response);
-    } else {
-        loadHtml(request, response, curr_path);
-    }
-})
+//app.post("/user/add", function(req, res) { 
+/* some server side logic */
+//res.send("OK");
+//});
+ 
 
-server.listen(process.env.PORT || port);
-console.log("> Server is running.");
+http.createServer(app).listen(port, function () {
+    console.log("SERVER RUNNING. Port: " + port);
+});
+
+
+/*app.configure(function(){
+    app.use('/images', express.static(path.join(__dirname, '/images')));
+    app.use('/lib', express.static(path.join(__dirname, '/lib')));
+    app.use('/views', express.static(path.join(__dirname, '/views')));
+});*/
+
+
+
+
+ 
+
+
+
