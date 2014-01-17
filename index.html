@@ -4,6 +4,8 @@
 
 	<script src='lib/jquery-latest.min.js'></script>
 	<script src='lib/easeljs-0.7.1.min.js'></script>
+	<script src='lib/notify.min.js'></script>
+	<script src='utils/messages.js'></script>
 	<script src='character.js'></script>
 </head>
 <body style='margin: 5px;'>
@@ -30,6 +32,10 @@
 			character.life  =  100;
 		});
 
+		nmessage("Site ta ficando SUBLIME!", "success");
+		nmessage("Facepobre", "info");
+		emessage($('#name'), "Funciona para qualquer elemento também", "error");
+		
 
 		function loadSprite (filename) {
 

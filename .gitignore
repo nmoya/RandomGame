@@ -2,6 +2,10 @@
 node_modules
 
 
+# MAC OS
+.DS_Store
+
+
 *.py[cod]
 
 # C extensions
