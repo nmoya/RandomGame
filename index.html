@@ -5,8 +5,9 @@
 	<script src='lib/jquery-latest.min.js'></script>
 	<script src='lib/easeljs-0.7.1.min.js'></script>
 	<script src='lib/notify.min.js'></script>
-	<script src='utils/messages.js'></script>
+	<script src='utils/notify.js'></script>
 	<script src='character.js'></script>
+	<script src="node_modules/socket.io/lib/socket.io.js"></script>
 </head>
 <body style='margin: 5px;'>
 	Digite seu nome para começar: <input type='text' id='name' value=''>
@@ -15,6 +16,15 @@
 	<canvas id="mainCanvas" width="100%" height="100%" style="border:1px solid #000000;"></canvas>
 	<texto id='canvasCoord'>Zero</texto>
 </body>
+
+<script>
+  var socket = io.connect('http://localhost');
+  socket.on('news', function (data) {
+  	alert("Recebi o evento");
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
+</script>
 
 
 <script type="text/javascript">
@@ -32,9 +42,9 @@
 			character.life  =  100;
 		});
 
-		nmessage("Site ta ficando SUBLIME!", "success");
-		nmessage("Facepobre", "info");
-		emessage($('#name'), "Funciona para qualquer elemento também", "error");
+		gnotify("Site ta ficando SUBLIME!", "success");
+		gnotify("Facepobre", "info");
+		enotify($('#name'), "Funciona para qualquer elemento também", "error");
 		
 
 		function loadSprite (filename) {
