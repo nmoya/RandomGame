@@ -18,11 +18,14 @@ app.post("/ggj/bcast", function(req, res) {
 serv_io.sockets.on("connection", function(s){ 
     clients += 1;
     serv_io.sockets.emit("online", {online: clients});
+    console.log("Online: " + clients);
     if (clients == 2)
-        serv_io.sockets.emit("bcast", {type: "success", message: "One more player for DOUBLE points!"});
+        serv_io.sockets.emit("bcast", {type: "info", message: "One more player for DOUBLE points!"});
     s.on("disconnect", function(){
         clients -= 1;
+        //Consider commenting the line below for performance
         serv_io.sockets.emit("online", {online: clients});
+        console.log("Online: " + clients);
    });
 });
 
