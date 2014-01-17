@@ -7,7 +7,7 @@
 	<script src='lib/notify.min.js'></script>
 	<script src='utils/notify.js'></script>
 	<script src='character.js'></script>
-	<script src="node_modules/socket.io/lib/socket.io.js"></script>
+	<script src="lib/socket.io.js"></script>
 </head>
 <body style='margin: 5px;'>
 	Digite seu nome para começar: <input type='text' id='name' value=''>
@@ -18,11 +18,10 @@
 </body>
 
 <script>
-  var socket = io.connect('http://localhost');
-  socket.on('news', function (data) {
-  	alert("Recebi o evento");
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
+  var socket = io.connect('/');
+  socket.on('bcast', function (data) {
+  	//alert("recebi a notificação");
+    gnotify(data.message, data.type);
   });
 </script>
 

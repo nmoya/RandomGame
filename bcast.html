@@ -1,0 +1,19 @@
+<html>
+<head>
+    <title>GGJ Bcast</title>
+</head>
+<body>
+
+<form action='/ggj/bcast/' method='post'>
+<select name='type'>
+    <option value='info'>Info</option>
+    <option value='warn'>Warning</option>
+    <option selected value='success'>Success</option>
+    <option value='error'>Error</option>
+</select>
+<p>Texto: <input type='text' name='message' value='' required='true'>
+<input type='submit'>
+</form>
+
+</body>
+</html>
