@@ -51,8 +51,16 @@ function init()
         console.log("SERVER RUNNING. Port: " + port);
     });
     serv_io = io.listen(server);
-    serv_io.set("log level", 3);
+    serv_io.set("log level", 1);
+    serv_io.set('transports', [
+            'websocket'
+          , 'flashsocket'
+          , 'htmlfile'
+          , 'xhr-polling'
+          , 'jsonp-polling'
+        ]);
     serv_io.set("polling duration", 3);
+    serv_io.set("connect timeout", 1000);
 
     //Main Page
     app.get("/", function(req, res) {
