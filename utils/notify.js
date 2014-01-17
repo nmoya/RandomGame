@@ -29,8 +29,6 @@ function enotify (element, text, type) {
 
 
 
-
-
 /*
 {
   // whether to hide the notification on click

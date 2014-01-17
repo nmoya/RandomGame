@@ -4,8 +4,8 @@ var http = require('http');
 var app = express();
 var io = require('socket.io');
 
-var connectionCounter = 0;
 var serv_io = null;
+var clients = 0;
 
 init();
 
@@ -15,16 +15,17 @@ app.post("/ggj/bcast", function(req, res) {
     res.send("Broadcast: \"" + req.body.message + "\" sent!");
 });
 
-serv_io.sockets.on('connection', function (socket) { 
-    connectionCounter += 1;
-    console.log("Online: " + connectionCounter);
-    socket.emit("bcast", {type: "success", message: "Online: " + connectionCounter});
-    //socket.emit("bcast", {type: "info", message: "it works!"});
-})
-serv_io.sockets.on('disconnect', function (socket) { 
-    connectionCounter -= 1;
-    console.log("Online: " + connectionCounter);
-})
+serv_io.sockets.on("connection", function(s){ 
+    clients += 1;
+    serv_io.sockets.emit("online", {online: clients});
+    if (clients == 2)
+        serv_io.sockets.emit("bcast", {type: "success", message: "One more player for DOUBLE points!"});
+    s.on("disconnect", function(){
+        clients -= 1;
+        serv_io.sockets.emit("online", {online: clients});
+   });
+});
+
 
 /*app.configure(function(){
     app.use('/images', express.static(path.join(__dirname, '/images')));
