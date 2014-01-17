@@ -51,7 +51,8 @@ function init()
         console.log("SERVER RUNNING. Port: " + port);
     });
     serv_io = io.listen(server);
-    serv_io.set("log level", 1);
+    serv_io.set("log level", 3);
+    serv_io.set("polling duration", 3);
 
     //Main Page
     app.get("/", function(req, res) {
