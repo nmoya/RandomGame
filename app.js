@@ -28,7 +28,9 @@ serv_io.sockets.on("connection", function(s){
         console.log("Online: " + clients);
    });
 });
-
+setInterval(function() {
+      serv_io.sockets.emit("bcast", {type: "success", message: "This is a broadcast message to all clients with this link open"});
+}, 5000);
 
 /*app.configure(function(){
     app.use('/images', express.static(path.join(__dirname, '/images')));
