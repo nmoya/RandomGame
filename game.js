@@ -53,7 +53,7 @@ function init()
     
 
     var data = {
-        images: ["/images/anaconda.png"],
+        images: ["/images/Anaconda.png"],
         frames: {width:48, height:48},
         animations: {run:[24,26], jump:[5,8,"run"]}
     };
