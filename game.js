@@ -89,7 +89,7 @@ function init()
 function gameLoop()
 {
     setPos(circle, circle.x+1, circle.y+1);
-    setPos(animation, Mouse.x, Mouse.y);
+    setPos(animation, animation.x+1, animation.y+1);
 
     if (circle.x > Canvas.width)
         circle.x = 50;
@@ -102,7 +102,7 @@ function gameLoop()
     {
         if (typeof lstShapes[key] == 'undefined') {
             lstShapes[key] = new createjs.Shape();
-            lstShapes[key].graphics.beginFill("red").drawRoundRect(0, 0, 5, 5, 1);
+            lstShapes[key].graphics.beginFill('#'+Math.floor(Math.random()*16777215).toString(16)).drawRoundRect(0, 0, 5, 5, 1);
             Stage.addChild(lstShapes[key]);
         }
         setPos(lstShapes[key], Players[key].x, Players[key].y);

@@ -55,7 +55,7 @@ function treatRequests()
 
     /* serves all the static files */
     app.get(/^(.+)$/, function(req, res){ 
-        console.log('static file request : ' + req.params);
+        //console.log('static file request : ' + req.params);
         res.sendfile( __dirname + req.params[0]); 
     });
 
@@ -81,10 +81,12 @@ function socket_functions()
             serv_io.sockets.emit("send_data", mouse_array);
         })
         s.on("update_coords", function(user){
-            console.log(User);
-            mouse_array[s.id].x = user.x;
-            mouse_array[s.id].y = user.y;
-            serv_io.sockets.emit("send_data", mouse_array);
+            if (typeof mouse_array[s.id] != 'undefined')
+            {
+                mouse_array[s.id].x = user.x;
+                mouse_array[s.id].y = user.y;
+                serv_io.sockets.emit("send_data", mouse_array);
+            }
         })
         s.on("disconnect", function(){
             clients -= 1;
