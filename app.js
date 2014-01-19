@@ -66,6 +66,9 @@ function treatRequests()
     });
 }
 
+
+mouse_array = {};
+
 //Responsible to send events to the client side.
 function socket_functions()
 {
@@ -73,14 +76,24 @@ function socket_functions()
         clients += 1;
         serv_io.sockets.emit("online", {online: clients});
         console.log("Online: " + clients);
-        if (clients == 2)
-            serv_io.sockets.emit("bcast", {type: "info", message: "One more player for DOUBLE points!"});
+        s.on("mouse_connected", function(user){
+            mouse_array[user.id] = user;
+            serv_io.sockets.emit("send_data", mouse_array);
+        })
+        s.on("update_coords", function(user){
+            mouse_array[s.id].x = user.x;
+            mouse_array[s.id].y = user.y;
+            serv_io.sockets.emit("send_data", mouse_array);
+        })
         s.on("disconnect", function(){
             clients -= 1;
-            //Consider commenting the line below for performance
             serv_io.sockets.emit("online", {online: clients});
+            delete mouse_array[s.id];
+            serv_io.sockets.emit("send_data", mouse_array);
             console.log("Online: " + clients);
        });
+
+    
     });
 }
 

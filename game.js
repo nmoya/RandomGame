@@ -3,6 +3,7 @@ var Canvas      = new Canvas();
 var Mouse       = new Mouse();
 var Stage       = null;
 
+lstShapes = {}
 
 //Assets
 var fpsLabel    = '';
@@ -21,6 +22,20 @@ function main()
         createjs.Ticker.addEventListener("tick", gameLoop);
     }
     createjs.Ticker.setFPS(50);
+
+
+    //Clean mouse positons
+    setInterval(function(){
+        for(var k in lstShapes)
+        {
+            if (typeof Players[k] == 'undefined')
+            {
+                Stage.removeChild(lstShapes[k]);
+                delete lstShapes[k];
+            }
+                
+        }
+    }, 5000);
     
 }
 
@@ -38,8 +53,10 @@ function init()
         var rect = Canvas.tag.getBoundingClientRect();
         setPos(Mouse, evt.clientX - rect.left, evt.clientY - rect.top);
         $("#canvasCoord").html(Mouse.x +", " + Mouse.y);
-    }, false);
-
+        User.x = Mouse.x;
+        User.y = Mouse.y;
+        socket.emit("update_coords", User);
+    }, false);    
 
     //Game functions
     //Create a stage by getting a reference to the canvas
@@ -55,16 +72,14 @@ function init()
     var data = {
         images: ["/images/Anaconda.png"],
         frames: {width:48, height:48},
-        animations: {run:[24,26], jump:[5,8,"run"]}
+        animations: {run:[24,26, "run", 0.1], jump:[5,8,"run", 4]}
     };
     var spriteSheet = new createjs.SpriteSheet(data);
     animation = new createjs.Sprite(spriteSheet, "run");
 
-
     setPos(animation, 100, 100);
     setPos(circle, 20, 50);
     setPos(fpsLabel, 10, 20);
-
 
     Stage.addChild(fpsLabel);
     Stage.addChild(circle);
@@ -73,8 +88,8 @@ function init()
 
 function gameLoop()
 {
-    setPos(circle, Mouse.x, Mouse.y);
-    setPos(animation, animation.x+1, animation.y);
+    setPos(circle, circle.x+1, circle.y+1);
+    setPos(animation, Mouse.x, Mouse.y);
 
     if (circle.x > Canvas.width)
         circle.x = 50;
@@ -82,6 +97,16 @@ function gameLoop()
         circle.y = 50;
 
     fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
+    console.log(Players);
+    for(var key in Players)
+    {
+        if (typeof lstShapes[key] == 'undefined') {
+            lstShapes[key] = new createjs.Shape();
+            lstShapes[key].graphics.beginFill("red").drawRoundRect(0, 0, 5, 5, 1);
+            Stage.addChild(lstShapes[key]);
+        }
+        setPos(lstShapes[key], Players[key].x, Players[key].y);
+    }
     Stage.update();
 }
 
