@@ -81,6 +81,7 @@ function socket_functions()
             serv_io.sockets.emit("send_data", mouse_array);
         })
         s.on("update_coords", function(user){
+            console.log(User);
             mouse_array[s.id].x = user.x;
             mouse_array[s.id].y = user.y;
             serv_io.sockets.emit("send_data", mouse_array);
