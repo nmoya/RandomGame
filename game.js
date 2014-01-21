@@ -1,18 +1,9 @@
-//Objects
-var Canvas      = new Canvas();
-var Mouse       = new Mouse();
-var Stage       = null;
-
-lstShapes = {}
+var lstShapes = {}
 
 //Assets
 var fpsLabel    = '';
 var circle      = null;
 var animation   = null;
-
-//Mouse constructor
-function Mouse() {this.x=0; this.y=0;}
-function Canvas() {}
 
 function main() 
 {
@@ -38,6 +29,7 @@ function main()
     }, 5000);
     
 }
+
 
 function init()
 {
@@ -84,20 +76,25 @@ function init()
     Stage.addChild(fpsLabel);
     Stage.addChild(circle);
     Stage.addChild(animation);
+
+    //createExplosion(400, 400, "orange");
 }
 
 function gameLoop()
 {
-    setPos(circle, circle.x+1, circle.y+1);
-    setPos(animation, animation.x+1, animation.y+1);
-
-    if (circle.x > Canvas.width)
-        circle.x = 50;
-    if (circle.y > Canvas.height)
-        circle.y = 50;
-
+    //FPS label
     fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
-    console.log(Players);
+
+    //Move sprites
+    setPos(circle, circle.x+5, circle.y);
+    setPos(animation, animation.x+1, animation.y+1);
+    if (outOfCanvas(circle))
+        setPos(circle, randomInt(0, Canvas.width), randomInt(0, Canvas.height));
+
+    if (outOfCanvas(animation))
+        setPos(animation, randomInt(0, Canvas.width), randomInt(0, Canvas.height));
+    
+    //Update mouse's positions
     for(var key in Players)
     {
         if (typeof lstShapes[key] == 'undefined') {
@@ -105,12 +102,16 @@ function gameLoop()
             lstShapes[key].graphics.beginFill('#'+Math.floor(Math.random()*16777215).toString(16)).drawRoundRect(0, 0, 5, 5, 1);
             Stage.addChild(lstShapes[key]);
         }
+        //Check for explosion
+        if (distance(Mouse, Players[key]) < 5)
+            createExplosion(Mouse.x, Mouse.y);
         setPos(lstShapes[key], Players[key].x, Players[key].y);
     }
+    //Update particles
+    for (var i=0; i<particles.length; i++)
+        particles[i].update();
+    
+    //Update canvas from EaselJS
     Stage.update();
 }
 
-function setPos (object, x, y) { 
-    object.x = x;
-    object.y = y;
-}
