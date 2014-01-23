@@ -30,7 +30,7 @@ function main()
     Canvas      = new _Canvas($("#mainCanvas")[0]);
     Mouse       = new _Mouse();
     Stage       = new createjs.Stage("mainCanvas");
-    Background  = new _Background("/images/forest_bg.jpg", 1920, 1080);
+    Background  = new _Background("/images/forest_bg.jpg", 1568, 848);
 
     window.addEventListener('keyup', function(event) { Key.onKeyup(event); }, false);
     window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
@@ -81,7 +81,7 @@ function init()
     //Structures
     gamer = new Player();
 
-    setPos(gamer.obj, 152, 556);
+    setPos(gamer.obj, 300, 500);
     setPos(fpsLabel, 10, 20);
 
     //Objects added example

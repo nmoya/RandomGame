@@ -3,7 +3,7 @@ var Canvas      = null;
 var Mouse       = null;
 var Stage       = null;
 var Background  = null;
-var LOCALHOST   = document.location.hostname == "localhost"
+var LOCALHOST   = !document.location.hostname == "localhost"
 
 var particles = [];
 
