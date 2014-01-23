@@ -42,7 +42,7 @@ function init()
           , 'jsonp-polling'
         ]);
     serv_io.set("polling duration", 3);
-    serv_io.set("connect timeout", 1000);   
+    serv_io.set("connect timeout", 1000);
 }
 
 //Treat all GET and POST requests to the server

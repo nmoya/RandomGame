@@ -22,6 +22,11 @@ function gnotify (text, type) {
 };
 
 function enotify (element, text, type) {
+  if (type == "info")
+  {
+    $.notify(element, text, {className: type, arrowShow: false, autoHideDelay: 3000, clickToHide: false});
+  }
+  else
     $.notify(element, text, type);
 }
 
