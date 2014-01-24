@@ -30,7 +30,7 @@ function main()
     Canvas      = new _Canvas($("#mainCanvas")[0]);
     Mouse       = new _Mouse();
     Stage       = new createjs.Stage("mainCanvas");
-    Background  = new _Background("/images/forest_bg.jpg", 1568, 848);
+    Background  = new _Background(Paths.background_image, 1568, 848);
 
     window.addEventListener('keyup', function(event) { Key.onKeyup(event); }, false);
     window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);

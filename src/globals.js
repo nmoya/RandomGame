@@ -7,6 +7,11 @@ var LOCALHOST   = !document.location.hostname == "localhost"
 
 var particles = [];
 
+var Paths = {
+    background_image: "./images/forest_bg.jpg",
+    anaconda_image: "./images/Anaconda.png"
+}
+
 //Mouse constructor
 function _Mouse() {this.x=0; this.y=0;}
 function _Canvas(tag_object) {

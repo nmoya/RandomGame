@@ -1,7 +1,7 @@
 function Player ()
 {
     var data = {
-        images: ["/images/Anaconda.png"],
+        images: [Paths.anaconda_image],
         frames: {width:48, height:48},
         animations: {
             idle: [0,2, true, 0.1]
