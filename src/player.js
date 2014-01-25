@@ -12,11 +12,7 @@ function Player ()
     };
     var spriteSheet = new createjs.SpriteSheet(data);
     this.obj = new createjs.Sprite(spriteSheet, "idle");
-    this.directionArray = []
-    this.directionArray.push(new Vector2D(3, 0)); // 0 right
-    this.directionArray.push(new Vector2D(-3, 0)); // 1 left
-    this.directionArray.push(new Vector2D(0, -3)); // 2 up
-    this.directionArray.push(new Vector2D(0, 3)); // 3 down
+    this.speed = 3
 
     this.update = function()
     {
@@ -27,25 +23,25 @@ function Player ()
         {
             if (this.obj.currentAnimation != "up")
                 this.obj.gotoAndPlay("up");
-            setPosVec(this.obj, this.directionArray[2].sum(this.obj));
+            setPos(this.obj, this.obj.x, this.obj.y-this.speed);
         }
         if (Key.isDown(Key.LEFT))
         {
             if (this.obj.currentAnimation != "left")
                 this.obj.gotoAndPlay("left");
-            setPosVec(this.obj, this.directionArray[1].sum(this.obj));
+            setPos(this.obj, this.obj.x-this.speed, this.obj.y);
         }
         if (Key.isDown(Key.DOWN))
         {
             if (this.obj.currentAnimation != "idle")
                 this.obj.gotoAndPlay("idle");
-            setPosVec(this.obj, this.directionArray[3].sum(this.obj));
+            setPos(this.obj, this.obj.x, this.obj.y+this.speed);
         }
         if (Key.isDown(Key.RIGHT))
         {
             if (this.obj.currentAnimation != "right")
                 this.obj.gotoAndPlay("right");
-            setPosVec(this.obj, this.directionArray[0].sum(this.obj));
+            setPos(this.obj, this.obj.x+this.speed, this.obj.y);
         }
             
     };

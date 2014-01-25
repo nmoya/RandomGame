@@ -92,10 +92,10 @@ function init()
 
     //Tutorial
     setTimeout(function(){
-        enotify($("#controlsTutorial"), "Use the arrow keys to move around", "info");
+        snotify(400, 200, "Use the arrow keys to move around", "info");
     }, 1000);
     setTimeout(function(){
-        enotify($("#soundTutorial"), "You can mute the music pressing S", "info");
+        snotify(100, 100, "You can mute the music pressing S", "info");
     }, 5000);
 
 
