@@ -1,4 +1,4 @@
-var lstShapes = {}
+var lstFriends = {}
 
 //Assets
 var fpsLabel     = '';
@@ -19,7 +19,7 @@ function main()
     Canvas      = new _Canvas($("#mainCanvas")[0]);
     Mouse       = new _Mouse();
     Stage       = new createjs.Stage("mainCanvas");
-    Background = new _Background(Image_Path+"loading.png", 1806, 1148);    
+    Background = new _Background(Image_Path+"loading.jpg", 1806, 1148);    
 
     window.addEventListener('keyup', function(event) { Key.onKeyup(event); }, false);
     window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
@@ -31,13 +31,12 @@ function main()
     Stage.update();
 
     var manifest = [
+        {id:"loading", src:Image_Path+"loading.jpg"},
+        {id:"ready", src:Image_Path+"ready.jpg"},
+        {id:"tela_01.png", src:Image_Path+"tela_01.jpg"},
+        {id:"bg_image", src:Image_Path+"forest_bg.jpg"},
         {id:"collision", src:Sound_Path+"hit.wav"},
         {id:"bg_music", src:Sound_Path+"tgt.mp3"},
-        {id:"bg_image", src:Image_Path+"forest_bg.jpg"},
-        {id:"loading", src:Image_Path+"loading.png"},
-        {id:"ready", src:Image_Path+"ready.png"},
-        {id:"tela_01.png", src:Image_Path+"tela_01.png"},
-        {id:"bg_image", src:Image_Path+"forest_bg.jpg"},
         {id:"character_sprit", src:Image_Path+"Anaconda.png"}
     ];
 
@@ -59,7 +58,7 @@ function updateLoading()
 function doneLoading()
 {
     Stage.removeAllChildren();
-    Background = new _Background(Image_Path+"ready.png", 1804, 1142);
+    Background = new _Background(Image_Path+"ready.jpg", 1804, 1142);
     createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
     Canvas.tag.onclick = init;
     loading_rect = new createjs.Shape();
@@ -79,7 +78,7 @@ function init()
     fpsLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#000");
 
     //Structures
-    Player = new _Player();
+    Player = new _Player("blue");
 
     setPos(Player.obj, 300, 500);
     setPos(fpsLabel, 10, 20);
@@ -103,16 +102,16 @@ function init()
     if (!createjs.Ticker.hasEventListener("tick")) { 
         createjs.Ticker.addEventListener("tick", gameLoop);
     }
-    createjs.Ticker.setFPS(80);
+    createjs.Ticker.setFPS(30);
 
     //Clean mouse positons
     setInterval(function(){
-        for(var k in lstShapes)
+        for(var k in lstFriends)
         {
             if (typeof Users[k] == 'undefined')
             {
-                Stage.removeChild(lstShapes[k]);
-                delete lstShapes[k];
+                Stage.removeChild(lstFriends[k].obj);
+                delete lstFriends[k];
             }
         }
     }, 5000);
@@ -129,15 +128,14 @@ function gameLoop()
     for(var key in Users)
     {
         var user_key = {x: Users[key].x * Canvas.width, y: Users[key].y * Canvas.height};
-        if (typeof lstShapes[key] == 'undefined') {
-            lstShapes[key] = new createjs.Shape();
-            lstShapes[key].graphics.beginFill('#'+Math.floor(Math.random()*16777215).toString(16)).drawRoundRect(0, 0, 5, 5, 1);
-            Stage.addChild(lstShapes[key]);
+        if (typeof lstFriends[key] == 'undefined') {
+            lstFriends[key] = new _Player("green");
+            Stage.addChild(lstFriends[key].obj);
         }
         //Check for explosion
         if (distance(Player.obj, user_key) < 5)
             createExplosion(Player.obj.x, Player.obj.y);
-        setPos(lstShapes[key], user_key.x, user_key.y);
+        setPos(lstFriends[key].obj, user_key.x, user_key.y);
     }    
     //Update particles
     for (var i=0; i<particles.length; i++)

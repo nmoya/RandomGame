@@ -1,15 +1,33 @@
-function _Player ()
+function _Player (color)
 {
-    var data = {
-        images: [Image_Path+"Anaconda.png"],
-        frames: {width:48, height:48},
-        animations: {
-            idle: [0,2, true, 0.1]
-           ,left:[12,14, true, 0.1]
-           ,right:[24,26, true, 0.1]
-           ,up:[36,38, true, 0.1]
-        }
-    };
+    var data = null;
+    if (color=="blue")
+    {
+        data = {
+            images: [Image_Path+"Anaconda.png"],
+            frames: {width:48, height:48},
+            animations: {
+                idle: [0,2, true, 0.1]
+               ,left:[12,14, true, 0.1]
+               ,right:[24,26, true, 0.1]
+               ,up:[36,38, true, 0.1]
+            }
+        };
+    }
+    else if (color == "green")
+    {
+        data = {
+            images: [Image_Path+"Anaconda.png"],
+            frames: {width:48, height:48},
+            animations: {
+                idle: [3,5, true, 0.1]
+               ,left:[15,17, true, 0.1]
+               ,right:[27,29, true, 0.1]
+               ,up:[39,41, true, 0.1]
+            }
+        };
+    }
+
     var spriteSheet = new createjs.SpriteSheet(data);
     this.obj = new createjs.Sprite(spriteSheet, "idle");
     this.speed = 3
