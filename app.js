@@ -67,37 +67,103 @@ function treatRequests()
 }
 
 
-mouse_array = {};
+user_array = {};
+var cleanGameState = {
+    leader: false,
+    enemies: [],
+    level: 0,
+    aliveEnemies: 0
+};
+
+var GameState = {
+    leader: false,
+    enemies: [],
+    level: 0,
+    aliveEnemies: 0
+}
 
 //Responsible to send events to the client side.
 function socket_functions()
-{
+{   //On connection. S is the file of a single player!!!
     serv_io.sockets.on("connection", function(s){ 
+        //Update online players tag
         clients += 1;
         serv_io.sockets.emit("online", {online: clients});
         console.log("Online: " + clients);
-        s.on("mouse_connected", function(user){
-            mouse_array[user.id] = user;
-            serv_io.sockets.emit("send_data", mouse_array);
+
+        
+        //When a user opens the website
+        s.on("user_connected", function(user){
+            user_array[user.id] = user;
+            serv_io.sockets.emit("send_data", user_array);
         })
+
+        s.on("getGameState", function(){
+            if (clients == 1)
+            {   GameState.leader = s.id;
+                GameState.aliveEnemies = 0;
+            }
+            s.emit("setGameState", GameState);
+        })
+
         s.on("update_coords", function(user){
-            if (typeof mouse_array[s.id] != 'undefined')
+            if (typeof user_array[s.id] != 'undefined')
             {
-                mouse_array[s.id].x = user.x;
-                mouse_array[s.id].y = user.y;
-                serv_io.sockets.emit("send_data", mouse_array);
+                user_array[s.id].x = user.x;
+                user_array[s.id].y = user.y;
+                serv_io.sockets.emit("send_data", user_array);
             }
         })
+
+        s.on("new_level", function(user){
+            GameState.leader = elect_leader();
+            GameState.enemies = [];
+            GameState.aliveEnemies = -1;
+            GameState.level += 1;
+            serv_io.sockets.emit("cbroadcast", GameState);
+        })
+
+
         s.on("disconnect", function(){
+            //Updates the online tag
             clients -= 1;
             serv_io.sockets.emit("online", {online: clients});
-            delete mouse_array[s.id];
-            serv_io.sockets.emit("send_data", mouse_array);
+            delete user_array[s.id];
+            serv_io.sockets.emit("send_data", user_array);
             console.log("Online: " + clients);
-       });
+
+            if (clients == 0)
+            {
+                GameState = {
+                    leader: false,
+                    enemies: [],
+                    level: 0,
+                    aliveEnemies: 0
+                }
+            }
+            else if (s.id == GameState.leader)
+            {
+                GameState.leader = elect_leader();
+                serv_io.sockets.emit("cbroadcast", GameState);
+            }
+        })
+
+        s.on("sbroadcast", function(data){
+            serv_io.sockets.emit("cbroadcast", data);
+        });
 
     
     });
 }
 
-
+function elect_leader()
+{
+    var user_list = []
+    for(var k in user_array)
+        user_list.push(k);
+    return user_list[randomInt(0, user_list.length-1)];
+}
+function randomInt(min, max)
+{
+    return Math.round(min + Math.random()*(max-min));
+}

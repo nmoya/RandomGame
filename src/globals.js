@@ -4,11 +4,19 @@ var Mouse       = null;
 var Stage       = null;
 var Background  = null;
 var LOCALHOST   = !document.location.hostname == "localhost"
+var EnemiesList = [];
 
 var particles = [];
 
 var Image_Path = "./images/";
 var Sound_Path = "./sounds/";
+
+var GameState = {
+        leader: false,
+        enemies: [],
+        level: 0,
+        aliveEnemies: 0
+}
 
 
 //Mouse constructor

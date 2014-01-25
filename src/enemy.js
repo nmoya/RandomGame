@@ -1,6 +1,6 @@
 function _Enemy()
-{	var data = {
-		images: [Image_Path+"Anaconda.png"],
+{	var data =
+	{	images: [Image_Path+"Anaconda.png"],
 		frames: {width:48, height:48},
 		animations:
 		{	idle: [36,38, true, 0.1]
@@ -28,5 +28,8 @@ function _Enemy()
 		else if (this.obj.y > Player.obj.y)
 		{	this.obj.y -= this.speed;
 		}
+	}
+	this.setStartPosition = function()
+	{	setPos(this.obj, randomInt(Canvas.width, Canvas.width*2), randomInt(0, Canvas.height));
 	}
 }

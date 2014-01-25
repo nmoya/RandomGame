@@ -1,36 +1,54 @@
-function _Player (color)
+function _Player ()
 {
     var data = null;
-    if (color=="blue")
-    {
-        data = {
-            images: [Image_Path+"Anaconda.png"],
-            frames: {width:48, height:48},
-            animations: {
-                idle: [0,2, true, 0.1]
-               ,left:[12,14, true, 0.1]
-               ,right:[24,26, true, 0.1]
-               ,up:[36,38, true, 0.1]
-            }
-        };
-    }
-    else if (color == "green")
-    {
-        data = {
-            images: [Image_Path+"Anaconda.png"],
-            frames: {width:48, height:48},
-            animations: {
-                idle: [3,5, true, 0.1]
-               ,left:[15,17, true, 0.1]
-               ,right:[27,29, true, 0.1]
-               ,up:[39,41, true, 0.1]
-            }
-        };
-    }
-
+    data = {
+        images: [Image_Path+"programmer.png"],
+        //frames: {width:48, height:48},
+        frames: {width:42, height:52},
+        animations: {
+             idle_front: {
+                frames: [5, 12],
+                next: true,
+                speed: 0.1
+             },
+             idle_left: {
+                frames: [4, 11],
+                next: true,
+                speed: 0.1
+             },
+             idle_right: {
+                frames: [6, 13],
+                next: true,
+                speed: 0.1
+             },
+             left: {
+                frames: [1, 8, 15, 22],
+                next: true,
+                speed: 0.1
+             },
+             right: {
+                frames: [0, 7, 14, 21],
+                next: true,
+                speed: 0.1
+             },
+             up: {
+                frames: [3, 10],
+                next: true,
+                speed: 0.1
+             },
+             down: {
+                frames: [2, 9],
+                next: true,
+                speed: 0.1
+             },
+        }
+    };
+    
     var spriteSheet = new createjs.SpriteSheet(data);
-    this.obj = new createjs.Sprite(spriteSheet, "idle");
-    this.speed = 3
+    this.obj = new createjs.Sprite(spriteSheet, "idle_front");
+    this.speed = 3;
+    this.sign = new createjs.Sprite(Image_Path+"sign.png");
+
 
     this.update = function()
     {
@@ -51,8 +69,8 @@ function _Player (color)
         }
         if (Key.isDown(Key.DOWN))
         {
-            if (this.obj.currentAnimation != "idle")
-                this.obj.gotoAndPlay("idle");
+            if (this.obj.currentAnimation != "down")
+                this.obj.gotoAndPlay("down");
             setPos(this.obj, this.obj.x, this.obj.y+this.speed);
         }
         if (Key.isDown(Key.RIGHT))
@@ -63,7 +81,9 @@ function _Player (color)
         }
 
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
-        {   setPos(User, Player.obj.x / Canvas.width, Player.obj.y / Canvas.height);
+        {   
+            setPos(User, Player.obj.x / Canvas.width, Player.obj.y / Canvas.height);
+            setPos(this.sign, this.obj.x, this.obj.y);
             socket.emit("update_coords", User);
         }
             

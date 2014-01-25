@@ -34,7 +34,6 @@ function main()
         {id:"loading", src:Image_Path+"loading.jpg"},
         {id:"ready", src:Image_Path+"ready.jpg"},
         {id:"tela_01.png", src:Image_Path+"tela_01.jpg"},
-        {id:"bg_image", src:Image_Path+"forest_bg.jpg"},
         {id:"collision", src:Sound_Path+"hit.wav"},
         {id:"bg_music", src:Sound_Path+"tgt.mp3"},
         {id:"character_sprit", src:Image_Path+"Anaconda.png"}
@@ -57,15 +56,12 @@ function updateLoading()
 }
 function doneLoading()
 {
-    Stage.removeAllChildren();
-    Background = new _Background(Image_Path+"ready.jpg", 1804, 1142);
+    var text = new createjs.Text("Hello World", "20px Arial", "#000000"); 
+    text.x = 100; text.textBaseline = "alphabetic";
     createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
-    Canvas.tag.onclick = init;
-    loading_rect = new createjs.Shape();
-    loading_rect.graphics.beginFill("red").drawRect(Canvas.width / 2-(loading_length/2), Canvas.height*0.77, 10, 35);
-    Stage.addChild(Background.obj);
-    Stage.addChild(loading_rect);
     Stage.update();
+    Canvas.tag.onclick = init;
+
 }
 
 function init()
@@ -78,16 +74,16 @@ function init()
     fpsLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#000");
 
     //Structures
-    Player = new _Player("blue");
+    Player = new _Player();
 
     setPos(Player.obj, 300, 500);
     setPos(fpsLabel, 10, 20);
 
     //Objects added example
     Stage.addChild(Background.obj);
+    Stage.addChild(Player.sign);
     Stage.addChild(Player.obj);
     Stage.addChild(fpsLabel);
-
 
 
     //Tutorial
@@ -104,7 +100,7 @@ function init()
     }
     createjs.Ticker.setFPS(30);
 
-    //Clean mouse positons
+    //Clean user positons
     setInterval(function(){
         for(var k in lstFriends)
         {
@@ -123,33 +119,100 @@ function gameLoop()
 {
     //FPS label
     fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
+
+    if (GameState.aliveEnemies == 0 && GameState.leader == User.id)
+    {
+        socket.emit("new_level", User);
+    }
+    if (GameState.enemies.length != EnemiesList.length)
+    {
+        createEnemyList();
+    }
     
-    //Update mouse's positions
+    //Update users' positions
     for(var key in Users)
     {
         var user_key = {x: Users[key].x * Canvas.width, y: Users[key].y * Canvas.height};
         if (typeof lstFriends[key] == 'undefined') {
-            lstFriends[key] = new _Player("green");
+            lstFriends[key] = new _Player();
             Stage.addChild(lstFriends[key].obj);
         }
-        //Check for explosion
-        if (distance(Player.obj, user_key) < 5)
-            createExplosion(Player.obj.x, Player.obj.y);
+
         setPos(lstFriends[key].obj, user_key.x, user_key.y);
     }    
-    //Update particles
-    for (var i=0; i<particles.length; i++)
-        particles[i].update();
-    
-    if (Key.isDown(Key.S))
+
+    for (var i = 0; i < EnemiesList.length; i++)
     {
-        if (createjs.Sound.getMute())
-            createjs.Sound.setMute(false);
-        else
-            createjs.Sound.setMute(true);
+        if (EnemiesList[i] != null) {
+
+            if (GameState.enemies[i].life <= 0)
+            {
+                Stage.removeChild(EnemiesList[i].obj);
+                EnemiesList[i] = null;
+            }
+            if (GameState.leader == User.id)
+            {
+                EnemiesList[i].update();
+                setPos(GameState.enemies[i], EnemiesList[i].obj.x/Canvas.width, EnemiesList[i].obj.y/Canvas.height);   
+            }
+            else //If it is a regular player, update the snake positions
+                setPos(EnemiesList[i].obj, GameState.enemies[i].x*Canvas.width, GameState.enemies[i].y*Canvas.height);
+        }
     }
+    if (GameState.leader == User.id && GameState.aliveEnemies > 0)
+        socket.emit("sbroadcast", GameState);
 
     Player.update();
     Stage.update();
 }
 
+function createEnemyList()
+{   EnemiesList = [];
+    for (var i=0; i< GameState.enemies.length; i++)
+    {   EnemiesList.push(new _Enemy());
+
+        setPos( EnemiesList[i].obj,
+                GameState.enemies[i].x,
+                GameState.enemies[i].y
+        );
+        Stage.addChild(EnemiesList[i].obj);
+        //test enemy type
+    }
+}
+
+function createLevel()
+{   GameState.aliveEnemies = (2 * Math.pow(GameState.level, 1.5)) + 5;
+    for (var i=0; i< GameState.aliveEnemies; i++)
+    {   
+        var direction = randomInt(0, 4);
+        if (direction == 0)
+        {
+            range = {
+                x: randomInt(Canvas.width, Canvas.width*2),
+                y: randomInt(0, Canvas.height)
+            }
+        }
+        else if (direction == 1){
+            range = {
+                x: randomInt(0, Canvas.width),
+                y: randomInt(0, -Canvas.height*2)
+            }
+        }
+        else if (direction == 2){
+            range = {
+                x: randomInt(-Canvas.width*2, 0),
+                y: randomInt(0, Canvas.height)
+            }
+        }
+        else{
+            range = {
+                x: randomInt(0, Canvas.width),
+                y: randomInt(Canvas.height, Canvas.height*2)
+            }
+        }
+        GameState.enemies.push({x: range.x,
+                                y: range.y,
+                                life: 100,
+                                type: 'user_enemy'});
+    }
+}
