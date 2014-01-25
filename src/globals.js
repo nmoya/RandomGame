@@ -10,6 +10,7 @@ var particles = [];
 var Image_Path = "./images/";
 var Sound_Path = "./sounds/";
 
+
 //Mouse constructor
 function _Mouse() {this.x=0; this.y=0;}
 function _Canvas(tag_object) {

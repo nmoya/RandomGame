@@ -30,25 +30,16 @@ function main()
     Stage.addChild(loading_rect);
     Stage.update();
 
-
-    if (LOCALHOST)
-    {
-        var manifest = [
-            {id:"collision", src:Sound_Path+"hit.wav"},
-            {id:"bg_image", src:Image_Path+"forest_bg.jpg"},
-            {id:"character_sprit", src:Image_Path+"Anaconda.png"}
-        ];
-    }
-    else
-    {
-        var manifest = [
-            {id:"collision", src:Sound_Path+"hit.wav"},
-            {id:"bg_music", src:Sound_Path+"tgt.mp3"},
-            {id:"bg_image", src:Image_Path+"forest_bg.jpg"},
-            {id:"character_sprit", src:Image_Path+"Anaconda.png"}
-        ];
-    }
-    
+    var manifest = [
+        {id:"collision", src:Sound_Path+"hit.wav"},
+        {id:"bg_music", src:Sound_Path+"tgt.mp3"},
+        {id:"bg_image", src:Image_Path+"forest_bg.jpg"},
+        {id:"loading", src:Image_Path+"loading.png"},
+        {id:"ready", src:Image_Path+"ready.png"},
+        {id:"tela_01.png", src:Image_Path+"tela_01.png"},
+        {id:"bg_image", src:Image_Path+"forest_bg.jpg"},
+        {id:"character_sprit", src:Image_Path+"Anaconda.png"}
+    ];
 
     preload = new createjs.LoadQueue();
     preload.installPlugin(createjs.Sound);
@@ -71,7 +62,10 @@ function doneLoading()
     Background = new _Background(Image_Path+"ready.png", 1804, 1142);
     createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
     Canvas.tag.onclick = init;
+    loading_rect = new createjs.Shape();
+    loading_rect.graphics.beginFill("red").drawRect(Canvas.width / 2-(loading_length/2), Canvas.height*0.77, 10, 35);
     Stage.addChild(Background.obj);
+    Stage.addChild(loading_rect);
     Stage.update();
 }
 
@@ -120,7 +114,6 @@ function init()
                 Stage.removeChild(lstShapes[k]);
                 delete lstShapes[k];
             }
-                
         }
     }, 5000);
 
