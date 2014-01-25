@@ -2,7 +2,7 @@ var lstShapes = {}
 
 //Assets
 var fpsLabel     = '';
-var gamer        = null;
+var Player       = null;
 var background   = null;
 var messageField = null;
 
@@ -78,14 +78,14 @@ function init()
     fpsLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#000");
 
     //Structures
-    gamer = new Player();
+    Player = new _Player();
 
-    setPos(gamer.obj, 300, 500);
+    setPos(Player.obj, 300, 500);
     setPos(fpsLabel, 10, 20);
 
     //Objects added example
     Stage.addChild(Background.obj);
-    Stage.addChild(gamer.obj);
+    Stage.addChild(Player.obj);
     Stage.addChild(fpsLabel);
 
 
@@ -128,15 +128,16 @@ function gameLoop()
     //Update mouse's positions
     for(var key in Users)
     {
+        var user_key = {x: Users[key].x * Canvas.width, y: Users[key].y * Canvas.height};
         if (typeof lstShapes[key] == 'undefined') {
             lstShapes[key] = new createjs.Shape();
             lstShapes[key].graphics.beginFill('#'+Math.floor(Math.random()*16777215).toString(16)).drawRoundRect(0, 0, 5, 5, 1);
             Stage.addChild(lstShapes[key]);
         }
         //Check for explosion
-        if (distance(Mouse, Users[key]) < 5)
-            createExplosion(Mouse.x, Mouse.y);
-        setPos(lstShapes[key], Users[key].x, Users[key].y);
+        if (distance(Player.obj, user_key) < 5)
+            createExplosion(Player.obj.x, Player.obj.y);
+        setPos(lstShapes[key], user_key.x, user_key.y);
     }    
     //Update particles
     for (var i=0; i<particles.length; i++)
@@ -150,7 +151,7 @@ function gameLoop()
             createjs.Sound.setMute(true);
     }
 
-    gamer.update();
+    Player.update();
     Stage.update();
 }
 

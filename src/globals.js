@@ -29,8 +29,6 @@ function _Canvas(tag_object) {
         var rect = this.getBoundingClientRect();
         setPos(Mouse, evt.clientX - rect.left, evt.clientY - rect.top);
         $("#canvasCoord").html(Mouse.x +", " + Mouse.y);
-        setPos(User, Mouse.x, Mouse.y);
-        socket.emit("update_coords", User);
     }, false);
 }
 

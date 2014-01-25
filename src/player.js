@@ -1,4 +1,4 @@
-function Player ()
+function _Player ()
 {
     var data = {
         images: [Paths.anaconda_image],
@@ -42,6 +42,11 @@ function Player ()
             if (this.obj.currentAnimation != "right")
                 this.obj.gotoAndPlay("right");
             setPos(this.obj, this.obj.x+this.speed, this.obj.y);
+        }
+
+        if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
+        {   setPos(User, Player.obj.x / Canvas.width, Player.obj.y / Canvas.height);
+            socket.emit("update_coords", User);
         }
             
     };
