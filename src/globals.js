@@ -52,6 +52,10 @@ function setPos (object, x, y) {
     object.x = x;
     object.y = y;
 }
+function setPosVec (object, vector) { 
+    object.x = vector.x;
+    object.y = vector.y;
+}
 function outOfCanvas(object)
 {
     if (object.x < 0 || object.x > Canvas.width)

@@ -11,6 +11,7 @@
     <script src="./lib/socket.io.js"></script>
     <script src='./src/globals.js'></script>
     <script src='./utils/notify.js'></script>
+    <script src='./utils/vector2d.js'></script>
     <script src='./utils/input.js'></script>
     <script src='./utils/listener.js'></script>
     <script src='./src/particle.js'></script>
@@ -20,14 +21,12 @@
 </head>
 
 <body style='margin: 5px;'>
-	<div align='right' id='online'></div>
-	<hr>
-
 	<canvas id="mainCanvas" width="100%" height="100%" style="border:1px solid #000000;"></canvas>
     <div id="soundTutorial" style="position:absolute; top:100; left:100;"></div>
     <div id="controlsTutorial" style="position:absolute; top:400; left:200;"></div>
 
 	<texto id='canvasCoord'>Zero</texto>
+    <div align='right' id='online'></div>
 </body>
 
 <script type="text/javascript">

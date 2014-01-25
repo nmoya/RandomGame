@@ -6,19 +6,6 @@ var gamer        = null;
 var background   = null;
 var messageField = null;
 
-function updateLoading()
-{
-    messageField.text = "Loading " + (preload.progress*100|0) + "%"
-    Stage.update();
-}
-function doneLoading()
-{
-    messageField.text = "Click to  P L A Y!";
-    createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
-    Stage.addChild(messageField);
-    Stage.update();
-    Canvas.tag.onclick = init;
-}
 function main() 
 {
     if (!createjs.Sound.initializeDefaultPlugins()) {
@@ -68,7 +55,19 @@ function main()
     preload.loadManifest(manifest);
 
 }
-
+function updateLoading()
+{
+    messageField.text = "Loading " + (preload.progress*100|0) + "%"
+    Stage.update();
+}
+function doneLoading()
+{
+    messageField.text = "Click to  P L A Y!";
+    createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+    Stage.addChild(messageField);
+    Stage.update();
+    Canvas.tag.onclick = init;
+}
 
 function init()
 {
