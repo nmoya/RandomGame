@@ -129,7 +129,7 @@ function init()
 
 
 }
-
+var new_game = false;
 function gameLoop()
 {
     //FPS label
@@ -137,8 +137,12 @@ function gameLoop()
     level_label.text = "Level: " + GameState.level;
     alive_label.text = "Alive: " + GameState.aliveEnemies;
 
-    if (GameState.aliveEnemies == 0 && GameState.leader == User.id)
+    if (GameState.aliveEnemies == 0 && GameState.leader == User.id && new_game == false)
+    {
         socket.emit("new_level", User);
+        new_game = true;
+    }
+        
 
     if (GameState.enemies.length != EnemiesList.length)
         createEnemyList();

@@ -66,7 +66,6 @@ function treatRequests()
     });
 }
 
-
 socket_list = {};
 user_array = {};
 var cleanGameState = {
@@ -119,11 +118,11 @@ function socket_functions()
         })
 
         s.on("new_level", function(user){
-            GameState.leader = elect_leader();
-            GameState.enemies = [];
-            GameState.aliveEnemies = -1;
-            GameState.level += 1;
-            serv_io.sockets.emit("cbroadcast", GameState);
+                GameState.leader = elect_leader();
+                GameState.enemies = [];
+                GameState.aliveEnemies = -1;
+                GameState.level += 1;
+                serv_io.sockets.emit("cbroadcast", GameState);
         })
 
 
