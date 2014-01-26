@@ -5,7 +5,7 @@ var fpsLabel     = '';
 var Player       = null;
 var background   = null;
 var messageField = null;
-var loading_length = 290;
+var loading_length = 330;
 var loading_rect = null;
 
 var level_label = null;
@@ -29,7 +29,7 @@ function main()
     window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
 
     loading_rect = new createjs.Shape();
-    loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2), Canvas.height*0.77, 10, 35);
+    loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2)+50, Canvas.height*0.77, 10, 35);
     Stage.addChild(Background.obj);
     Stage.addChild(loading_rect);
     Stage.update();
@@ -37,6 +37,10 @@ function main()
     var manifest = [
         {id:"loading", src:Image_Path+"loading.jpg"},
         {id:"tela_01.png", src:Image_Path+"tela_01.jpg"},
+        {id:"crown.png", src:Image_Path+"crown.png"},
+        {id:"keyboard.png", src:Image_Path+"keyboard.png"},
+        {id:"blood.png", src:Image_Path+"blood.png"},
+        {id:"programmer.png", src:Image_Path+"programmer.png"},
         {id:"collision", src:Sound_Path+"hit.wav"},
         {id:"bg_music", src:Sound_Path+"tgt.mp3"},
     ];
@@ -73,7 +77,7 @@ function main()
 }
 function updateLoading()
 {
-    loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2), Canvas.height*0.77, loading_length*(preload.progress*100|0)/100, 35);
+    loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2)+50, Canvas.height*0.77, loading_length*(preload.progress*100|0)/100, 35);
     Stage.update();
 }
 
@@ -81,7 +85,7 @@ function init()
 {
     Canvas.tag.onclick = null;
     Stage.removeAllChildren();
-    //createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+    createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
     //Assets
