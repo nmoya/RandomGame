@@ -117,20 +117,24 @@ function socket_functions()
             }
         })
 
-        s.on("new_level", function(user){
-                GameState.leader = elect_leader();
-                GameState.enemies = [];
-                GameState.aliveEnemies = -1;
-                GameState.level += 1;
-                serv_io.sockets.emit("cbroadcast", GameState);
+        s.on("new_level", function(user)
+        {   serv_io.sockets.emit("reset");
+            if(GameState.level != 0)
+                serv_io.sockets.emit('bcast', {type:"sucess", message: "Stage clear"});
+            GameState.leader = elect_leader();
+            GameState.enemies = [];
+            GameState.aliveEnemies = -1;
+            GameState.level += 1;
+            serv_io.sockets.emit("cbroadcast", GameState);
         })
 
         s.on("game_over", function(user){
-                GameState.leader = elect_leader();
-                GameState.enemies = [];
-                GameState.aliveEnemies = -1;
-                GameState.level = 1;
-                serv_io.sockets.emit("cbroadcast", GameState);
+            serv_io.sockets.emit("reset");
+            GameState.leader = elect_leader();
+            GameState.enemies = [];
+            GameState.aliveEnemies = -1;
+            GameState.level = 1;
+            serv_io.sockets.emit("cbroadcast", GameState);
         })
 
         //send the hit to lider

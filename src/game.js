@@ -81,7 +81,7 @@ function init()
 {
     Canvas.tag.onclick = null;
     Stage.removeAllChildren();
-    //createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+    createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
     //Assets
@@ -104,12 +104,25 @@ function init()
     //Stage.addChild(Player.horizontal_weapon);
     //Stage.addChild(Player.vertical_weapon);
     Stage.addChild(Player.weapon);
-    Stage.addChild(alive_label);
+    // Stage.addChild(alive_label);
     Stage.addChild(level_label);
     Stage.addChild(Player.obj);
     Stage.addChild(Player.crown);
     Stage.addChild(fpsLabel);
 
+    setInterval(function ()
+    {   if(GameState.leader == User.id)
+        {   var nullEnemies = true;
+            for (var i = EnemiesList.length - 1; i >= 0; i--)
+            {   nullEnemies = nullEnemies && (EnemiesList[i] == null);
+            }
+            if(nullEnemies)
+            {   GameState.aliveEnemies = 0;
+                socket.emit("new_level", User);
+            }
+
+        }
+    }, 1000);
 
     setInterval(function(){
         if (GameState.leader == User.id && GameState.aliveEnemies > 0)
@@ -171,23 +184,18 @@ function gameLoop()
     }    
 
     for (var i = 0; i < EnemiesList.length; i++)
-    {
-        if (EnemiesList[i] != null) {
-
-            if (GameState.enemies[i].life <= 0)
-            {
-                Stage.removeChild(EnemiesList[i].obj);
-                EnemiesList[i] = null;
-            }
-            if (GameState.leader == User.id)
-            {
-                EnemiesList[i].update();
+    {   if (EnemiesList[i] != null && GameState.enemies[i].life > 0)
+        {   if (GameState.leader == User.id)
+            {   EnemiesList[i].update();
                 setPos(GameState.enemies[i], EnemiesList[i].obj.x/Canvas.width, EnemiesList[i].obj.y/Canvas.height);   
             }
-            else //If it is a regular player, update the snake positions
-            {
-                setPos(EnemiesList[i].obj, GameState.enemies[i].x*Canvas.width, GameState.enemies[i].y*Canvas.height);
+            else //If it is a regular player, update the enemy positions
+            {   setPos(EnemiesList[i].obj, GameState.enemies[i].x*Canvas.width, GameState.enemies[i].y*Canvas.height);
             }
+        }
+        else if (EnemiesList[i] != null && GameState.enemies[i].life <= 0)
+        {   Stage.removeChild(EnemiesList[i].obj);
+            EnemiesList[i] = null;
         }
     }
     Player.update();

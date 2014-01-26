@@ -167,10 +167,8 @@ function _Player ()
             //COLLISION TEST
             for (var i = 0; i< GameState.enemies.length; i++)
             {   // console.log(distance(EnemiesList[i].obj, Player.obj));
-                if (distance(EnemiesList[i].obj, Player.obj) < 100)
+                if (EnemiesList[i] != null && distance(EnemiesList[i].obj, Player.obj) < 75)
                 {   createjs.Sound.play("collision", createjs.Sound.INTERUPT_LATE);
-                    Stage.removeChild(EnemiesList[i].obj);
-
                     //send hit
                     socket.emit("send_hit", {pos: i, life: 100});
                 }
@@ -179,10 +177,10 @@ function _Player ()
 
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
         {   setPos(User, Player.obj.x / Canvas.width, Player.obj.y / Canvas.height);
-            setPos(this.sign, this.obj.x+5, this.obj.y+43);
+            setPos(this.sign, this.obj.x+15, this.obj.y+43);
         }
         if (GameState.leader == User.id)
-        {   setPos(this.crown, this.obj.x+5, this.obj.y-30);
+        {   setPos(this.crown, this.obj.x+15, this.obj.y-30);
         }
             
     };

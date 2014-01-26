@@ -41,7 +41,26 @@ function listen()
 
     //Set the life of enemy has hited by other user
     socket.on("lider_hit", function (hit)
-    {   GameState.enemies[hit.pos].life -= hit.life;
+    {   if(GameState.enemies[hit.pos].life > 0)
+        {   GameState.enemies[hit.pos].life -= hit.life;
+            if (GameState.enemies[hit.pos].life <= 0)
+            {   GameState.aliveEnemies --;
+            }
+        }
+
+        if(GameState.aliveEnemies <= 0)
+        {   socket.emit("new_level", User);
+        }
+    });
+
+    socket.on("reset", function()
+    {   for (var i = EnemiesList.length - 1; i >= 0; i--)
+        {   if(EnemiesList[i] != null)
+            {   Stage.removeChild(EnemiesList[i].obj);
+                EnemiesList[i] = null;
+            }
+        }
+        EnemiesList = [];
     });
 
     //Set the game state via broadcast. (All users)
