@@ -12,7 +12,7 @@ $.notify.defaults({ arrowShow: true });
 $.notify.defaults({ clickToHide: true });
 $.notify.defaults({ autoHide: true });
 $.notify.defaults({ autoHideDelay: 2500 });
-$.notify.defaults({ globalPosition: 'top right' });
+$.notify.defaults({ globalPosition: 'bottom right' });
 $.notify.defaults({ elementPosition: 'bottom left' });
 function gnotify (text, type) {
     if (type == 'info')

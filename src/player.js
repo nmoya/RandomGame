@@ -165,13 +165,35 @@ function _Player ()
             }
 
             //COLLISION TEST
+            var hit_count = 0;
             for (var i = 0; i< GameState.enemies.length; i++)
             {   // console.log(distance(EnemiesList[i].obj, Player.obj));
                 if (EnemiesList[i] != null && distance(EnemiesList[i].obj, Player.obj) < 75)
                 {   createjs.Sound.play("collision", createjs.Sound.INTERUPT_LATE);
                     //send hit
                     socket.emit("send_hit", {pos: i, life: 100});
+                    hit_count+=1;
                 }
+            }
+            if (hit_count >= GameState.level)
+            {
+                data = {
+                    images: [Image_Path+"blood.png"],
+                    frames: {width:60, height:60},
+                    animations: {
+                         start: {
+                            frames: [0, 1, 2, 3],
+                            next: false,
+                            speed: 0.5
+                         }
+                     }
+                 };
+                var spriteSheet = new createjs.SpriteSheet(data);
+                BLOOD = new createjs.Sprite(spriteSheet, "start");            
+                setPos(BLOOD, Player.obj.x, Player.obj.y);
+                Stage.removeChild(Player.obj);
+                Stage.addChild(BLOOD);
+                Stage.addChild(Player.obj);
             }
         }
 

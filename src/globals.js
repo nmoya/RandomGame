@@ -7,7 +7,7 @@ var LOCALHOST   = !document.location.hostname == "localhost"
 var EnemiesList = [];
 
 var particles = [];
-
+var BLOOD       = null;
 var Image_Path = "./images/";
 var Sound_Path = "./sounds/";
 

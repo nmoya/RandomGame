@@ -12,6 +12,7 @@ var level_label = null;
 var alive_label = null;
 var gameover_label = null;
 var new_game = false;
+var music = false;
 
 function main() 
 {
@@ -86,7 +87,11 @@ function init()
 {
     Canvas.tag.onclick = null;
     Stage.removeAllChildren();
-    createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+    if (music == false)
+    {
+        createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);    
+        music = true;
+    }
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
     //Assets
@@ -203,7 +208,8 @@ function gameLoop()
     {   if (EnemiesList[i] != null && GameState.enemies[i].life > 0)
         {   if (GameState.leader == User.id)
             {   EnemiesList[i].update();
-                setPos(GameState.enemies[i], EnemiesList[i].obj.x/Canvas.width, EnemiesList[i].obj.y/Canvas.height);   
+                if (EnemiesList[i] != null)
+                    setPos(GameState.enemies[i], EnemiesList[i].obj.x/Canvas.width, EnemiesList[i].obj.y/Canvas.height);   
             }
             else //If it is a regular player, update the enemy positions
             {   setPos(EnemiesList[i].obj, GameState.enemies[i].x*Canvas.width, GameState.enemies[i].y*Canvas.height);
@@ -225,7 +231,7 @@ function gameLoop()
 
 //CHECK
 function gameOver()
-{return;
+{
     //Stage.removeAllChildren();
     //Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
     gameover_label = new createjs.Text("GAME OVER", "20px Arial", "#ffffff");
@@ -234,8 +240,10 @@ function gameOver()
 
 
     Stage.removeAllChildren();
+    lstFriends = {};
     EnemiesList = [];
     socket.emit("game_over", User);
+    gnotify("GAME OVER", "error");
     init();
 
 }
