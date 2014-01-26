@@ -121,9 +121,10 @@ function init()
             for (var i = EnemiesList.length - 1; i >= 0; i--)
             {   nullEnemies = nullEnemies && (EnemiesList[i] == null);
             }
-            if(nullEnemies)
+            if(nullEnemies && EnemiesList.length > 0 && new_game == false)
             {   GameState.aliveEnemies = 0;
                 socket.emit("new_level", User);
+                new_game = true;
             }
             if (GameState.level == 0 && new_game == false)
             {
