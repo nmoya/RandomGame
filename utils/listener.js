@@ -39,12 +39,16 @@ function listen()
         GameState = gs;
     });
 
+    //Set the life of enemy has hited by other user
+    socket.on("lider_hit", function (hit)
+    {   GameState.enemies[hit.pos].life -= hit.life;
+    });
+
     //Set the game state via broadcast. (All users)
     socket.on("cbroadcast", function(data)
     {   GameState = data;
         if (GameState.leader == User.id && GameState.aliveEnemies == -1)
-        {   
-            gnotify("You have been elected as the leader!", "success");
+        {   gnotify("You have been elected as the leader!", "success");
             createLevel();
             socket.emit("sbroadcast", GameState);
         }

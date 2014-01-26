@@ -133,6 +133,11 @@ function socket_functions()
                 serv_io.sockets.emit("cbroadcast", GameState);
         })
 
+        //send the hit to lider
+        s.on("send_hit", function(hit)
+        {   socket_list[GameState.leader].emit("lider_hit", hit);
+        })
+
 
         s.on("disconnect", function(){
             //Updates the online tag

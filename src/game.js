@@ -201,7 +201,7 @@ function gameLoop()
 
 //CHECK
 function gameOver()
-{
+{return;
     //Stage.removeAllChildren();
     //Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
     gameover_label = new createjs.Text("GAME OVER", "20px Arial", "#ffffff");
