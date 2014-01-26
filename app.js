@@ -119,8 +119,8 @@ function socket_functions()
 
         s.on("new_level", function(user)
         {   serv_io.sockets.emit("reset");
-            if(GameState.level != 0)
-                serv_io.sockets.emit('bcast', {type:"sucess", message: "Stage clear"});
+            //if(GameState.level != 0)
+                //serv_io.sockets.emit('bcast', {type:"sucess", message: "Stage clear"});
             GameState.leader = elect_leader();
             GameState.enemies = [];
             GameState.aliveEnemies = -1;
