@@ -67,6 +67,7 @@ function treatRequests()
 }
 
 
+socket_list = {};
 user_array = {};
 var cleanGameState = {
     leader: false,
@@ -90,6 +91,7 @@ function socket_functions()
         //Update online players tag
         clients += 1;
         serv_io.sockets.emit("online", {online: clients});
+        socket_list[s.id] = s;
         console.log("Online: " + clients);
 
         
@@ -130,6 +132,7 @@ function socket_functions()
             clients -= 1;
             serv_io.sockets.emit("online", {online: clients});
             delete user_array[s.id];
+            delete socket_list[s.id];
             serv_io.sockets.emit("send_data", user_array);
             console.log("Online: " + clients);
 

@@ -63,7 +63,7 @@ function _Player ()
 
 
     //Load sword lr
-    data = {
+    /*data = {
         images: [Image_Path+"sword.png"],
         frames: {width:48, height:98},
         animations: {
@@ -80,7 +80,40 @@ function _Player ()
          }
      };
     var spriteSheet = new createjs.SpriteSheet(data);
+    this.weapon = new createjs.Sprite(spriteSheet);*/
+
+    data = {
+        images: [Image_Path+"keyboard.png"],
+        frames: {width:30, height:30},
+        animations: {
+             up: {
+                frames: [0, 1, 2, 3],
+                next: false,
+                speed: 0.4
+             },
+             down: {
+                frames: [4, 5, 6, 7],
+                next: false,
+                speed: 0.4
+             },
+             left: {
+                frames: [8, 9, 10, 11],
+                next: false,
+                speed: 0.4
+             },
+             right: {
+                frames: [12, 13, 14, 15],
+                next: false,
+                speed: 0.4
+             }
+         }
+     };
+    var spriteSheet = new createjs.SpriteSheet(data);
     this.weapon = new createjs.Sprite(spriteSheet);
+    this.weapon.addEventListener("animationend", function(){
+        setPos(Player.weapon, -100, -100);
+    })
+
 
     data = {
         images: [Image_Path+"crown.png"],
@@ -130,26 +163,26 @@ function _Player ()
         {
             var curr = this.obj.currentAnimation;
 
-            var offset = {x: 30, y: 15}; //px
+            var offset = {x: 20, y: 30}; //px
             
             if (curr == "up")
-            {   setPos(this.vertical_weapon, this.obj.x - offset.y - 10, this.obj.y - offset.x);
-                this.vertical_weapon.gotoAndPlay("top_attack");
+            {   setPos(this.weapon, this.obj.x, this.obj.y - offset.x);
+                this.weapon.gotoAndPlay("up");
             }
             else if (curr == "down")
-            {   setPos(this.vertical_weapon, this.obj.x - offset.y - 10, this.obj.y + offset.x);
-                this.vertical_weapon.gotoAndPlay("bot_attack");
+            {   setPos(this.weapon, this.obj.x, this.obj.y + offset.y);
+                this.weapon.gotoAndPlay("down");
             }
             else if (curr == "left")
-            {   setPos(this.horizontal_weapon, this.obj.x - offset.x, this.obj.y - offset.y);
-                this.horizontal_weapon.gotoAndPlay("left_attack");
+            {   setPos(this.weapon, this.obj.x - offset.x, this.obj.y);
+                this.weapon.gotoAndPlay("left");
             }
             else if (curr == "right")
-            {   setPos(this.horizontal_weapon, this.obj.x + offset.x, this.obj.y - offset.y); 
-                this.horizontal_weapon.gotoAndPlay("right_attack");
+            {   setPos(this.weapon, this.obj.x + offset.x, this.obj.y); 
+                this.weapon.gotoAndPlay("right");
             }
-            else
-                this.vertical_weapon.gotoAndPlay("bot_attack");
+            // else
+            //     this.weapon.gotoAndPlay("down");
 
         }
         else

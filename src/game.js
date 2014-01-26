@@ -79,8 +79,9 @@ function init()
     //Objects added example
     Stage.addChild(Background.obj);
     Stage.addChild(Player.sign);
-    Stage.addChild(Player.horizontal_weapon);
-    Stage.addChild(Player.vertical_weapon);
+    //Stage.addChild(Player.horizontal_weapon);
+    //Stage.addChild(Player.vertical_weapon);
+    Stage.addChild(Player.weapon);
     Stage.addChild(alive_label);
     Stage.addChild(level_label);
     Stage.addChild(Player.obj);
