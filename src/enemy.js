@@ -54,7 +54,7 @@ function _Enemy(speed)
 
         if (distance(this.obj, Player.obj) < 5)
         {
-            //gameOver();
+            gameOver();
         }
 	}
 	this.setStartPosition = function()

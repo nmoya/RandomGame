@@ -1,5 +1,6 @@
 function _Player ()
-{
+{   var hitDelay = 1000;
+    var lastHit = false;
     var data = null;
     data = {
         images: [Image_Path+"programmer.png"],
@@ -139,9 +140,11 @@ function _Player ()
                 this.obj.gotoAndPlay("right");
             setPos(this.obj, this.obj.x+this.speed, this.obj.y);
         }
-        if (Key.isDown(Key.SPACE))
-        {
-            
+        if (Key.isDown(Key.SPACE) && !lastHit)
+        {   lastHit = true;
+            setTimeout(function ()
+            {   lastHit = false;
+            }, hitDelay);
             var curr = this.obj.currentAnimation;
             var offset = {x: 20, y: 30}; //px
             if (curr == "up")
@@ -161,31 +164,25 @@ function _Player ()
                 this.weapon.gotoAndPlay("right");
             }
 
-
             //COLLISION TEST
-            for (var i =0; i< GameState.enemies.length; i++)
-            {
-                console.log(distance(EnemiesList[i].obj, Player.obj));
+            for (var i = 0; i< GameState.enemies.length; i++)
+            {   // console.log(distance(EnemiesList[i].obj, Player.obj));
                 if (distance(EnemiesList[i].obj, Player.obj) < 100)
-                {
-                    createjs.Sound.play("collision", createjs.Sound.INTERUPT_LATE);
+                {   createjs.Sound.play("collision", createjs.Sound.INTERUPT_LATE);
                     Stage.removeChild(EnemiesList[i].obj);
+
+                    //send hit
+                    socket.emit("send_hit", {pos: i, life: 100});
                 }
             }
         }
-        else
-        {
-            //
-        }
 
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
-        {   
-            setPos(User, Player.obj.x / Canvas.width, Player.obj.y / Canvas.height);
+        {   setPos(User, Player.obj.x / Canvas.width, Player.obj.y / Canvas.height);
             setPos(this.sign, this.obj.x+5, this.obj.y+43);
         }
         if (GameState.leader == User.id)
-        {
-            setPos(this.crown, this.obj.x+5, this.obj.y-30);
+        {   setPos(this.crown, this.obj.x+5, this.obj.y-30);
         }
             
     };
