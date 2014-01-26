@@ -79,9 +79,12 @@ function init()
     //Objects added example
     Stage.addChild(Background.obj);
     Stage.addChild(Player.sign);
+    Stage.addChild(Player.horizontal_weapon);
+    Stage.addChild(Player.vertical_weapon);
     Stage.addChild(alive_label);
     Stage.addChild(level_label);
     Stage.addChild(Player.obj);
+    Stage.addChild(Player.crown);
     Stage.addChild(fpsLabel);
 
 
@@ -99,12 +102,12 @@ function init()
         if (GameState.leader == User.id && GameState.aliveEnemies > 0)
             socket.emit("sbroadcast", GameState);
             
-    }, 180);
+    }, 100);
 
     setInterval(function(){
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
             socket.emit("update_coords", User);
-    }, 50);
+    }, 25);
 
     if (!createjs.Ticker.hasEventListener("tick")) { 
         createjs.Ticker.addEventListener("tick", gameLoop);
@@ -165,10 +168,16 @@ function gameLoop()
                 setPos(GameState.enemies[i], EnemiesList[i].obj.x/Canvas.width, EnemiesList[i].obj.y/Canvas.height);   
             }
             else //If it is a regular player, update the snake positions
+            {
                 setPos(EnemiesList[i].obj, GameState.enemies[i].x*Canvas.width, GameState.enemies[i].y*Canvas.height);
+            }
         }
     }
     Player.update();
+    if (GameState.leader == User.id)
+        setPos(GameState.crownPosition, Player.crown.x/Canvas.width, Player.crown.y/Canvas.height);
+    else
+        setPos(Player.crown, GameState.crownPosition.x*Canvas.width, GameState.crownPosition.y*Canvas.height);
     Stage.update();
 }
 

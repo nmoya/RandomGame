@@ -43,11 +43,11 @@ function _Player ()
              },
         }
     };
-    
     var spriteSheet = new createjs.SpriteSheet(data);
     this.obj = new createjs.Sprite(spriteSheet, "idle_front");
     this.speed = 6;
 
+    //Load the sign
     data = {
         images: [Image_Path+"sign.png"],
         frames: {width:29, height:9},
@@ -61,6 +61,42 @@ function _Player ()
     var spriteSheet = new createjs.SpriteSheet(data);
     this.sign = new createjs.Sprite(spriteSheet, "idle");
 
+
+    //Load sword lr
+    data = {
+        images: [Image_Path+"sword.png"],
+        frames: {width:48, height:98},
+        animations: {
+             left_attack: {
+                frames: [0, 2, 4, 6, 8],
+                next: false,
+                speed: 0.4
+             },
+             right_attack: {
+                frames: [1, 3, 5, 7, 9],
+                next: false,
+                speed: 0.4
+             }
+         }
+     };
+    var spriteSheet = new createjs.SpriteSheet(data);
+    this.weapon = new createjs.Sprite(spriteSheet);
+
+    data = {
+        images: [Image_Path+"crown.png"],
+        frames: {width:30, height:40},
+        animations: {
+             idle: {
+                frames: [0],
+                next: true,
+                speed: 1
+             }
+         }
+     };
+    var spriteSheet = new createjs.SpriteSheet(data);
+    this.crown = new createjs.Sprite(spriteSheet);
+
+   
     this.update = function()
     {
         if (outOfCanvas(this.obj))
@@ -90,12 +126,45 @@ function _Player ()
                 this.obj.gotoAndPlay("right");
             setPos(this.obj, this.obj.x+this.speed, this.obj.y);
         }
+        if (Key.isDown(Key.SPACE))
+        {
+            var curr = this.obj.currentAnimation;
+
+            var offset = {x: 30, y: 15}; //px
+            
+            if (curr == "up")
+            {   setPos(this.vertical_weapon, this.obj.x - offset.y - 10, this.obj.y - offset.x);
+                this.vertical_weapon.gotoAndPlay("top_attack");
+            }
+            else if (curr == "down")
+            {   setPos(this.vertical_weapon, this.obj.x - offset.y - 10, this.obj.y + offset.x);
+                this.vertical_weapon.gotoAndPlay("bot_attack");
+            }
+            else if (curr == "left")
+            {   setPos(this.horizontal_weapon, this.obj.x - offset.x, this.obj.y - offset.y);
+                this.horizontal_weapon.gotoAndPlay("left_attack");
+            }
+            else if (curr == "right")
+            {   setPos(this.horizontal_weapon, this.obj.x + offset.x, this.obj.y - offset.y); 
+                this.horizontal_weapon.gotoAndPlay("right_attack");
+            }
+            else
+                this.vertical_weapon.gotoAndPlay("bot_attack");
+
+        }
+        else
+        {
+            //
+        }
 
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
         {   
             setPos(User, Player.obj.x / Canvas.width, Player.obj.y / Canvas.height);
             setPos(this.sign, this.obj.x+5, this.obj.y+43);
-            
+        }
+        if (GameState.leader == User.id)
+        {
+            setPos(this.crown, this.obj.x+5, this.obj.y-30);
         }
             
     };

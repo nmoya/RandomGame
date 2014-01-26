@@ -15,7 +15,8 @@ var GameState = {
         leader: false,
         enemies: [],
         level: 0,
-        aliveEnemies: 0
+        aliveEnemies: 0,
+        crownPosition: {x: 0, y:0}
 }
 
 

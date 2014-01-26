@@ -79,7 +79,8 @@ var GameState = {
     leader: false,
     enemies: [],
     level: 0,
-    aliveEnemies: 0
+    aliveEnemies: 0,
+    crownPosition: { x: 0, y: 0}
 }
 
 //Responsible to send events to the client side.
@@ -138,7 +139,8 @@ function socket_functions()
                     leader: false,
                     enemies: [],
                     level: 0,
-                    aliveEnemies: 0
+                    aliveEnemies: 0,
+                    crownPosition: { x: 0, y: 0}
                 }
             }
             else if (s.id == GameState.leader)
