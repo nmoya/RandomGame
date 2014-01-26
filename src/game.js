@@ -11,6 +11,7 @@ var loading_rect = null;
 var level_label = null;
 var alive_label = null;
 var gameover_label = null;
+var new_game = false;
 
 function main() 
 {
@@ -124,13 +125,19 @@ function init()
             {   GameState.aliveEnemies = 0;
                 socket.emit("new_level", User);
             }
-            if (GameState.level == 0)
+            if (GameState.level == 0 && new_game == false)
             {
                 GameState.aliveEnemies = 0;
                 socket.emit("new_level", User);
+                new_game = true;
             }
         }
     }, 1000);
+
+    setInterval(function ()
+    {   
+        new_game = false;
+    }, 10000);
 
     setInterval(function(){
         if (GameState.leader == User.id && GameState.aliveEnemies > 0)
@@ -162,7 +169,7 @@ function init()
 
 
 }
-var new_game = false;
+
 function gameLoop()
 {
     //FPS label
