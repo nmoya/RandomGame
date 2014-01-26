@@ -10,6 +10,7 @@ var loading_rect = null;
 
 var level_label = null;
 var alive_label = null;
+var gameover_label = null;
 
 function main() 
 {
@@ -35,12 +36,33 @@ function main()
 
     var manifest = [
         {id:"loading", src:Image_Path+"loading.jpg"},
-        {id:"ready", src:Image_Path+"ready.jpg"},
         {id:"tela_01.png", src:Image_Path+"tela_01.jpg"},
         {id:"collision", src:Sound_Path+"hit.wav"},
         {id:"bg_music", src:Sound_Path+"tgt.mp3"},
-        {id:"character_sprit", src:Image_Path+"Anaconda.png"}
     ];
+
+    //Tutorial
+    setTimeout(function(){
+        gnotify("You MUST protect the leader", "info");
+    }, 1000);
+    setTimeout(function(){
+        gnotify("Use the ARROW keys to move around and SPACE to attack!", "info");
+    }, 3000);
+
+    //Créditos
+    setTimeout(function(){
+        gnotify("Nikolas Moya, programador.", "success");
+    }, 12000);
+    setTimeout(function(){
+        gnotify("Guilherme Mattioli, programador", "success");
+    }, 16000);
+    setTimeout(function(){
+        gnotify("Marilia Ferreira, designer.", "success");
+    }, 20000);
+    setTimeout(function(){
+        gnotify("Rafael Zilio, designer", "success");
+    }, 24000);
+
 
     preload = new createjs.LoadQueue();
     preload.installPlugin(createjs.Sound);
@@ -59,7 +81,7 @@ function init()
 {
     Canvas.tag.onclick = null;
     Stage.removeAllChildren();
-    createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+    //createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
     //Assets
@@ -87,16 +109,6 @@ function init()
     Stage.addChild(Player.obj);
     Stage.addChild(Player.crown);
     Stage.addChild(fpsLabel);
-
-
-
-    //Tutorial
-    setTimeout(function(){
-        snotify(400, 200, "Use the arrow keys to move around", "info");
-    }, 1000);
-    setTimeout(function(){
-        snotify(100, 100, "You can mute the music pressing S", "info");
-    }, 5000);
 
 
     setInterval(function(){
@@ -186,10 +198,28 @@ function gameLoop()
     Stage.update();
 }
 
+
+//CHECK
+function gameOver()
+{
+    //Stage.removeAllChildren();
+    //Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
+    gameover_label = new createjs.Text("GAME OVER", "20px Arial", "#ffffff");
+    setPos(gameover_label, Canvas.width/2, Canvas.height/2);
+    Stage.addChild(gameover_label);
+
+
+    Stage.removeAllChildren();
+    EnemiesList = [];
+    socket.emit("game_over", User);
+    init();
+
+}
+
 function createEnemyList()
 {   EnemiesList = [];
     for (var i=0; i< GameState.enemies.length; i++)
-    {   EnemiesList.push(new _Enemy());
+    {   EnemiesList.push(new _Enemy(GameState.enemies[i].speed));
 
         setPos( EnemiesList[i].obj,
                 GameState.enemies[i].x,
@@ -233,6 +263,7 @@ function createLevel()
         GameState.enemies.push({x: range.x,
                                 y: range.y,
                                 life: 100,
+                                speed: randomInt(1, 3),
                                 type: 'user_enemy'});
     }
 }

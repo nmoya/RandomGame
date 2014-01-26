@@ -43,7 +43,9 @@ function listen()
     socket.on("cbroadcast", function(data)
     {   GameState = data;
         if (GameState.leader == User.id && GameState.aliveEnemies == -1)
-        {   createLevel();
+        {   
+            gnotify("You have been elected as the leader!", "success");
+            createLevel();
             socket.emit("sbroadcast", GameState);
         }
         /*if (GameState.aliveEnemies > 0 && EnemiesList.length == 0)

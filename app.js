@@ -125,6 +125,14 @@ function socket_functions()
                 serv_io.sockets.emit("cbroadcast", GameState);
         })
 
+        s.on("game_over", function(user){
+                GameState.leader = elect_leader();
+                GameState.enemies = [];
+                GameState.aliveEnemies = -1;
+                GameState.level = 1;
+                serv_io.sockets.emit("cbroadcast", GameState);
+        })
+
 
         s.on("disconnect", function(){
             //Updates the online tag
@@ -137,7 +145,6 @@ function socket_functions()
 
             if (clients == 0)
             {
-                console.log("Last Client left. Cleaning");
                 GameState = {
                     leader: false,
                     enemies: [],

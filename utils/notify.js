@@ -16,7 +16,7 @@ $.notify.defaults({ globalPosition: 'top right' });
 $.notify.defaults({ elementPosition: 'bottom left' });
 function gnotify (text, type) {
     if (type == 'info')
-        $.notify(text, {className: type, globalPosition: "bottom left"} );
+        $.notify(text, {className: type, globalPosition: "top left", autoHideDelay: 5000} );
     else
         $.notify(text, type);
 };

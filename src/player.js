@@ -141,10 +141,9 @@ function _Player ()
         }
         if (Key.isDown(Key.SPACE))
         {
-            var curr = this.obj.currentAnimation;
-
-            var offset = {x: 20, y: 30}; //px
             
+            var curr = this.obj.currentAnimation;
+            var offset = {x: 20, y: 30}; //px
             if (curr == "up")
             {   setPos(this.weapon, this.obj.x, this.obj.y - offset.x);
                 this.weapon.gotoAndPlay("up");
@@ -161,9 +160,18 @@ function _Player ()
             {   setPos(this.weapon, this.obj.x + offset.x, this.obj.y+10); 
                 this.weapon.gotoAndPlay("right");
             }
-            // else
-            //     this.weapon.gotoAndPlay("down");
 
+
+            //COLLISION TEST
+            for (var i =0; i< GameState.enemies.length; i++)
+            {
+                console.log(distance(EnemiesList[i].obj, Player.obj));
+                if (distance(EnemiesList[i].obj, Player.obj) < 100)
+                {
+                    createjs.Sound.play("collision", createjs.Sound.INTERUPT_LATE);
+                    Stage.removeChild(EnemiesList[i].obj);
+                }
+            }
         }
         else
         {
