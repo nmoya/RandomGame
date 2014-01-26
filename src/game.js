@@ -44,10 +44,7 @@ function main()
 
     preload = new createjs.LoadQueue();
     preload.installPlugin(createjs.Sound);
-    if (!LOCALHOST)
-        preload.addEventListener("complete", doneLoading);
-    else
-        preload.addEventListener("complete", init);
+    preload.addEventListener("complete", init);
     preload.addEventListener("progress", updateLoading);
     preload.loadManifest(manifest);
 
@@ -57,20 +54,12 @@ function updateLoading()
     loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2), Canvas.height*0.77, loading_length*(preload.progress*100|0)/100, 35);
     Stage.update();
 }
-function doneLoading()
-{
-    var text = new createjs.Text("Hello World", "20px Arial", "#000000"); 
-    text.x = 100; text.textBaseline = "alphabetic";
-    createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
-    Stage.update();
-    Canvas.tag.onclick = init;
-
-}
 
 function init()
 {
     Canvas.tag.onclick = null;
     Stage.removeAllChildren();
+    createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
     //Assets
@@ -83,7 +72,8 @@ function init()
     //Structures
     Player = new _Player();
 
-    setPos(Player.obj, 300, 500);
+    setPos(Player.obj, Canvas.width/2, Canvas.height/2);
+    setPos(Player.sign, Canvas.width/2+5, Canvas.height/2+43);
     setPos(fpsLabel, 10, 20);
 
     //Objects added example

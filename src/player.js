@@ -9,44 +9,44 @@ function _Player ()
              idle_front: {
                 frames: [5, 12],
                 next: true,
-                speed: 0.2
+                speed: 0.4
              },
              idle_left: {
                 frames: [4, 11],
                 next: true,
-                speed: 0.2
+                speed: 0.4
              },
              idle_right: {
                 frames: [6, 13],
                 next: true,
-                speed: 0.2
+                speed: 0.4
              },
              left: {
                 frames: [1, 8, 15, 22],
                 next: true,
-                speed: 0.2
+                speed: 0.4
              },
              right: {
                 frames: [0, 7, 14, 21],
                 next: true,
-                speed: 0.2
+                speed: 0.4
              },
              up: {
                 frames: [3, 10],
                 next: true,
-                speed: 0.2
+                speed: 0.4
              },
              down: {
                 frames: [2, 9],
                 next: true,
-                speed: 0.2
+                speed: 0.4
              },
         }
     };
     
     var spriteSheet = new createjs.SpriteSheet(data);
     this.obj = new createjs.Sprite(spriteSheet, "idle_front");
-    this.speed = 4;
+    this.speed = 6;
 
     data = {
         images: [Image_Path+"sign.png"],
@@ -60,7 +60,6 @@ function _Player ()
      };
     var spriteSheet = new createjs.SpriteSheet(data);
     this.sign = new createjs.Sprite(spriteSheet, "idle");
-
 
     this.update = function()
     {

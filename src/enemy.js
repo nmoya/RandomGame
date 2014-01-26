@@ -42,7 +42,7 @@ function _Enemy()
 	};
 	var spriteSheet = new createjs.SpriteSheet(data);
 	this.obj = new createjs.Sprite(spriteSheet, "idle_front");
-	this.speed = 3;
+	this.speed = 2;
 	this.radiusToCollide = 10;
 
 	this.update = function()
