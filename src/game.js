@@ -124,7 +124,11 @@ function init()
             {   GameState.aliveEnemies = 0;
                 socket.emit("new_level", User);
             }
-
+            if (GameState.level == 0)
+            {
+                GameState.aliveEnemies = 0;
+                socket.emit("new_level", User);
+            }
         }
     }, 1000);
 
