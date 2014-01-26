@@ -138,6 +138,7 @@ function socket_functions()
 
             if (clients == 0)
             {
+                console.log("Last Client left. Cleaning");
                 GameState = {
                     leader: false,
                     enemies: [],

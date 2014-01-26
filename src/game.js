@@ -197,7 +197,7 @@ function createEnemyList()
 }
 
 function createLevel()
-{   GameState.aliveEnemies = (2 * Math.pow(GameState.level, 1.5)) + 5;
+{   GameState.aliveEnemies = Math.floor((2 * Math.pow(GameState.level, 1.5)) + 5);
     for (var i=0; i< GameState.aliveEnemies; i++)
     {   
         var direction = randomInt(0, 4);

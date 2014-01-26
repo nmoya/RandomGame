@@ -9,37 +9,37 @@ function _Player ()
              idle_front: {
                 frames: [5, 12],
                 next: true,
-                speed: 0.4
+                speed: 0.3
              },
              idle_left: {
                 frames: [4, 11],
                 next: true,
-                speed: 0.4
+                speed: 0.3
              },
              idle_right: {
                 frames: [6, 13],
                 next: true,
-                speed: 0.4
+                speed: 0.3
              },
              left: {
                 frames: [1, 8, 15, 22],
                 next: true,
-                speed: 0.4
+                speed: 0.3
              },
              right: {
                 frames: [0, 7, 14, 21],
                 next: true,
-                speed: 0.4
+                speed: 0.3
              },
              up: {
                 frames: [3, 10],
                 next: true,
-                speed: 0.4
+                speed: 0.3
              },
              down: {
                 frames: [2, 9],
                 next: true,
-                speed: 0.4
+                speed: 0.3
              },
         }
     };
@@ -61,26 +61,6 @@ function _Player ()
     var spriteSheet = new createjs.SpriteSheet(data);
     this.sign = new createjs.Sprite(spriteSheet, "idle");
 
-
-    //Load sword lr
-    /*data = {
-        images: [Image_Path+"sword.png"],
-        frames: {width:48, height:98},
-        animations: {
-             left_attack: {
-                frames: [0, 2, 4, 6, 8],
-                next: false,
-                speed: 0.4
-             },
-             right_attack: {
-                frames: [1, 3, 5, 7, 9],
-                next: false,
-                speed: 0.4
-             }
-         }
-     };
-    var spriteSheet = new createjs.SpriteSheet(data);
-    this.weapon = new createjs.Sprite(spriteSheet);*/
 
     data = {
         images: [Image_Path+"keyboard.png"],
@@ -174,11 +154,11 @@ function _Player ()
                 this.weapon.gotoAndPlay("down");
             }
             else if (curr == "left")
-            {   setPos(this.weapon, this.obj.x - offset.x, this.obj.y);
+            {   setPos(this.weapon, this.obj.x - offset.x, this.obj.y+10);
                 this.weapon.gotoAndPlay("left");
             }
             else if (curr == "right")
-            {   setPos(this.weapon, this.obj.x + offset.x, this.obj.y); 
+            {   setPos(this.weapon, this.obj.x + offset.x, this.obj.y+10); 
                 this.weapon.gotoAndPlay("right");
             }
             // else

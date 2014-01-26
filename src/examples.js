@@ -23,3 +23,24 @@ if (Key.isDown(Key.S))
     else
         createjs.Sound.setMute(true);
 }
+
+
+//Load sword lr
+    /*data = {
+        images: [Image_Path+"sword.png"],
+        frames: {width:48, height:98},
+        animations: {
+             left_attack: {
+                frames: [0, 2, 4, 6, 8],
+                next: false,
+                speed: 0.4
+             },
+             right_attack: {
+                frames: [1, 3, 5, 7, 9],
+                next: false,
+                speed: 0.4
+             }
+         }
+     };
+    var spriteSheet = new createjs.SpriteSheet(data);
+    this.weapon = new createjs.Sprite(spriteSheet);*/
