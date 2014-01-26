@@ -8,6 +8,9 @@ var messageField = null;
 var loading_length = 290;
 var loading_rect = null;
 
+var level_label = null;
+var alive_label = null;
+
 function main() 
 {
     if (!createjs.Sound.initializeDefaultPlugins()) {
@@ -71,7 +74,11 @@ function init()
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
     //Assets
-    fpsLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#000");
+    fpsLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#FFFFFF");
+    level_label = new createjs.Text(GameState.level, "20px Arial", "#ffffff");
+    setPos(level_label, Canvas.width-100, 10);
+    alive_label = new createjs.Text(GameState.aliveEnemies, "16px Arial", "#ffffff");
+    setPos(alive_label, Canvas.width-100, 50);
 
     //Structures
     Player = new _Player();
@@ -82,8 +89,11 @@ function init()
     //Objects added example
     Stage.addChild(Background.obj);
     Stage.addChild(Player.sign);
+    Stage.addChild(alive_label);
+    Stage.addChild(level_label);
     Stage.addChild(Player.obj);
     Stage.addChild(fpsLabel);
+
 
 
     //Tutorial
@@ -94,6 +104,17 @@ function init()
         snotify(100, 100, "You can mute the music pressing S", "info");
     }, 5000);
 
+
+    setInterval(function(){
+        if (GameState.leader == User.id && GameState.aliveEnemies > 0)
+            socket.emit("sbroadcast", GameState);
+            
+    }, 180);
+
+    setInterval(function(){
+        if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
+            socket.emit("update_coords", User);
+    }, 50);
 
     if (!createjs.Ticker.hasEventListener("tick")) { 
         createjs.Ticker.addEventListener("tick", gameLoop);
@@ -119,15 +140,14 @@ function gameLoop()
 {
     //FPS label
     fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
+    level_label.text = "Level: " + GameState.level;
+    alive_label.text = "Alive: " + GameState.aliveEnemies;
 
     if (GameState.aliveEnemies == 0 && GameState.leader == User.id)
-    {
         socket.emit("new_level", User);
-    }
+
     if (GameState.enemies.length != EnemiesList.length)
-    {
         createEnemyList();
-    }
     
     //Update users' positions
     for(var key in Users)
@@ -137,7 +157,6 @@ function gameLoop()
             lstFriends[key] = new _Player();
             Stage.addChild(lstFriends[key].obj);
         }
-
         setPos(lstFriends[key].obj, user_key.x, user_key.y);
     }    
 
@@ -159,9 +178,6 @@ function gameLoop()
                 setPos(EnemiesList[i].obj, GameState.enemies[i].x*Canvas.width, GameState.enemies[i].y*Canvas.height);
         }
     }
-    if (GameState.leader == User.id && GameState.aliveEnemies > 0)
-        socket.emit("sbroadcast", GameState);
-
     Player.update();
     Stage.update();
 }

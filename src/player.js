@@ -9,45 +9,57 @@ function _Player ()
              idle_front: {
                 frames: [5, 12],
                 next: true,
-                speed: 0.1
+                speed: 0.2
              },
              idle_left: {
                 frames: [4, 11],
                 next: true,
-                speed: 0.1
+                speed: 0.2
              },
              idle_right: {
                 frames: [6, 13],
                 next: true,
-                speed: 0.1
+                speed: 0.2
              },
              left: {
                 frames: [1, 8, 15, 22],
                 next: true,
-                speed: 0.1
+                speed: 0.2
              },
              right: {
                 frames: [0, 7, 14, 21],
                 next: true,
-                speed: 0.1
+                speed: 0.2
              },
              up: {
                 frames: [3, 10],
                 next: true,
-                speed: 0.1
+                speed: 0.2
              },
              down: {
                 frames: [2, 9],
                 next: true,
-                speed: 0.1
+                speed: 0.2
              },
         }
     };
     
     var spriteSheet = new createjs.SpriteSheet(data);
     this.obj = new createjs.Sprite(spriteSheet, "idle_front");
-    this.speed = 3;
-    this.sign = new createjs.Sprite(Image_Path+"sign.png");
+    this.speed = 4;
+
+    data = {
+        images: [Image_Path+"sign.png"],
+        frames: {width:29, height:9},
+        animations: {
+             idle: {
+                frames: [0],
+                next: true
+             }
+         }
+     };
+    var spriteSheet = new createjs.SpriteSheet(data);
+    this.sign = new createjs.Sprite(spriteSheet, "idle");
 
 
     this.update = function()
@@ -83,8 +95,8 @@ function _Player ()
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
         {   
             setPos(User, Player.obj.x / Canvas.width, Player.obj.y / Canvas.height);
-            setPos(this.sign, this.obj.x, this.obj.y);
-            socket.emit("update_coords", User);
+            setPos(this.sign, this.obj.x+5, this.obj.y+43);
+            
         }
             
     };
