@@ -7,6 +7,24 @@ var io = require('socket.io');
 var serv_io = null;
 var clients = 0;
 
+socket_list = {};
+user_array = {};
+var cleanGameState = {
+    leader: false,
+    enemies: [],
+    level: 0,
+    aliveEnemies: 0
+};
+
+var GameState = {
+    leader: false,
+    enemies: [],
+    level: 0,
+    aliveEnemies: 0,
+    crownPosition: { x: 0, y: 0}
+}
+
+
 //Require other files 
 //http://stackoverflow.com/questions/5797852/in-node-js-how-do-i-include-functions-from-my-other-files
 
@@ -18,16 +36,9 @@ socket_functions();
 //Creates the HTTP server and configurates the libraries
 function init()
 {
-    //app.use(express.bodyParser());
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(express.static(__dirname + '/public'));
-
-    /*app.configure(function(){
-        app.use('/images', express.static(path.join(__dirname, '/images')));
-        app.use('/lib', express.static(path.join(__dirname, '/lib')));
-        app.use('/views', express.static(path.join(__dirname, '/views')));
-    });*/
 
     /* Create server */
     server = http.createServer(app)
@@ -68,22 +79,6 @@ function treatRequests()
     });
 }
 
-socket_list = {};
-user_array = {};
-var cleanGameState = {
-    leader: false,
-    enemies: [],
-    level: 0,
-    aliveEnemies: 0
-};
-
-var GameState = {
-    leader: false,
-    enemies: [],
-    level: 0,
-    aliveEnemies: 0,
-    crownPosition: { x: 0, y: 0}
-}
 
 //Responsible to send events to the client side.
 function socket_functions()
