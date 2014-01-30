@@ -7,6 +7,8 @@ var io = require('socket.io');
 var serv_io = null;
 var clients = 0;
 
+//Require other files 
+//http://stackoverflow.com/questions/5797852/in-node-js-how-do-i-include-functions-from-my-other-files
 
 //Road map
 init();

@@ -68,6 +68,9 @@ function main()
     setTimeout(function(){
         gnotify("Rafael Zilio, designer", "success");
     }, 24000);
+    setTimeout(function(){
+        gnotify("Alex Campos, músico", "success");
+    }, 28000);
 
 
     preload = new createjs.LoadQueue();
