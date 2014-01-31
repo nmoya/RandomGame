@@ -1,15 +1,8 @@
 var socket = null;
-var Users = {};
-var User = null;
 
 function listen()
 {
     socket = io.connect('/');
-    User = {
-        id: 0,
-        x: 0,
-        y: 0,
-    }
 
     //Receives the broadcast messages
     socket.on('bcast', function (data) {
@@ -22,21 +15,20 @@ function listen()
     });
 
     socket.on("connect", function(){
-        User.id = socket.socket.sessionid;
-        socket.emit("user_connected", User);
-        //Just to make sure that the clients number is accurate.
-        socket.emit("getGameState");
-    });
-
-    //Users walk
-    socket.on("send_data", function(list){
-        Users = list;
-        delete Users[User.id];
+        Player = new _Player(socket.socket.sessionid);
+        console.log("Meu id:" + Player.id);
     });
 
     //Set the game state to only one user.
     socket.on("setGameState", function (gs) {
         GameState = gs;
+        delete GameState.Users[Player.id];
+    });
+
+    socket.on("user_disconnected", function (user_id) {
+        Stage.removeChild(UserList[user_id].obj);
+        last_user_removed = user_id;
+        delete UserList[user_id];
     });
 
     //Set the life of enemy has hited by other user

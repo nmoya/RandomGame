@@ -3,27 +3,23 @@ var Canvas      = null;
 var Mouse       = null;
 var Stage       = null;
 var Background  = null;
-var LOCALHOST   = !document.location.hostname == "localhost"
-var EnemiesList = [];
+var EnemiesList = {};
+var Player      = null;
+var UserList = {}
 
-var particles = [];
-var BLOOD       = null;
+
+var particles  = [];
+var BLOOD      = null;
 var Image_Path = "./images/";
 var Sound_Path = "./sounds/";
+var last_user_removed = null;
 
-var GameState = {
-        leader: false,
-        enemies: [],
-        level: 0,
-        aliveEnemies: 0,
-        crownPosition: {x: 0, y:0}
-}
+var GameState = {}
 
 
 //Mouse constructor
 function _Mouse() {this.x=0; this.y=0;}
 function _Canvas(tag_object) {
-
     this.tag = tag_object;
     //XX - Resize
     this.context = this.tag.getContext('2d');

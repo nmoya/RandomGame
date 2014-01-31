@@ -1,4 +1,4 @@
-function _Player ()
+function _Player (id)
 {   var hitDelay = 1000;
     var lastHit = false;
     var data = null;
@@ -47,6 +47,7 @@ function _Player ()
     var spriteSheet = new createjs.SpriteSheet(data);
     this.obj = new createjs.Sprite(spriteSheet, "idle_front");
     this.speed = 6;
+    this.id = id;
 
     //Load the sign
     data = {
@@ -110,6 +111,9 @@ function _Player ()
     var spriteSheet = new createjs.SpriteSheet(data);
     this.crown = new createjs.Sprite(spriteSheet);
 
+    this.isLeader = function(){
+        return this.id == GameState.leader;
+    }
    
     this.update = function()
     {
@@ -198,12 +202,10 @@ function _Player ()
         }
 
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
-        {   setPos(User, Player.obj.x / Canvas.width, Player.obj.y / Canvas.height);
-            setPos(this.sign, this.obj.x+15, this.obj.y+43);
-        }
-        if (GameState.leader == User.id)
-        {   setPos(this.crown, this.obj.x+15, this.obj.y-30);
-        }
+            setPos(this.sign, this.obj.x+5, this.obj.y+43);
+
+        if (typeof GameState != "undefined")
+            setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
             
     };
 }
