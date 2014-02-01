@@ -86,12 +86,14 @@ function updateLoading()
 function init()
 {
     Stage.removeAllChildren();
+    socket.emit("client_ready");
     if (music == false)
     {
         //createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);    
         music = true;
     }
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
+
 
     //Assets
     fpsLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#FFFFFF");

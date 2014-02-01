@@ -100,9 +100,11 @@ function socket_functions()
         
         //If the client is alone, a new game needs to be created
         GameState.Users[s.id] = {x: 0, y: 0, current_animation: "idle"};
-        if (clients == 1)
-            setTimeout(createGameState(1), 3000);
-        
+
+        s.on("client_ready", function(){
+            if (clients == 1)
+                createGameState(1);
+        })
 
         s.on("update_coords", function(player){
             if (typeof GameState.Users[s.id] != 'undefined')
