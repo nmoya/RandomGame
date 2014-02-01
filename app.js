@@ -4,6 +4,7 @@ var http = require('http');
 var app = express();
 var io = require('socket.io');
 var fs = require("fs");
+var emitter = require('events');
 var serv_io = null;
 var clients = 0;
 
@@ -35,6 +36,8 @@ socket_functions();
 //Creates the HTTP server and configurates the libraries
 function init()
 {
+    emitter = new emitter.EventEmitter();
+    console.log(emitter);
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(express.static(__dirname + '/public'));
@@ -239,7 +242,6 @@ function ServerEnemy(x, y, life, speed, type, current_animation)
             GameState.aliveEnemies -= 1;
             this.life = 0;
             GameState.config.Player.leader_speed = Math.floor(GameState.config.Player.leader_speed / 2);
-            console.log(CONFIG.Player.leader_speed);
             if (GameState.config.Player.leader_speed == 0)
                 GameOver();
         }
@@ -256,20 +258,25 @@ function destroyGameState(){
     GameState.config = CONFIG;
     GameState.Enemies = {};
 }
-function GameOver() {
+function GameOver(callback) {
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
     serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "GAME OVER! The leader died."});
-    setTimeout(createGameState(1), 3000);
+    setTimeout(function(){
+        createGameState(1);
+    }, 3000);
 }
 function NextLevel(){
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
     serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "Level Complete"});
-    setTimeout(createGameState(GameState.level+1), 3000);
+    setTimeout(function(){
+        createGameState(GameState.level+1);
+    }, 3000);
 }
 function serverloop()
 {
+    console.log("Game loop");
     for(var key in GameState.Enemies)
         if (GameState.Enemies[key])
             GameState.Enemies[key].update();
