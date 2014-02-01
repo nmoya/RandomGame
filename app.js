@@ -37,7 +37,6 @@ socket_functions();
 function init()
 {
     emitter = new emitter.EventEmitter();
-    console.log(emitter);
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(express.static(__dirname + '/public'));
@@ -200,7 +199,6 @@ function createGameState(level){
                                randomInt(GameState.config.Enemy.min_speed, GameState.config.Enemy.max_speed),
                                 'user_enemy', "idle");
     }
-    console.log(GameState.Enemies);
     GameState.crown_position = {x: 0, y: 0};
     serverinterval = setInterval(serverloop, 1000/GameState.config.Game.max_fps);
 }
