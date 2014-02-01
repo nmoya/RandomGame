@@ -174,10 +174,15 @@ function _Player (id)
         }
 
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
+        {
             setPos(this.sign, this.obj.x+5, this.obj.y+43);
-
-        if (typeof GameState != "undefined")
-            setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
+            socket.emit("update_coords", {id: Player.id, 
+                                      x: Player.obj.x,
+                                      y: Player.obj.y,
+                                      current_animation: Player.obj.currentAnimation});
+        }
+        //if (typeof GameState != "undefined")
+        setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
             
     };
 }

@@ -46,11 +46,11 @@ function main(GameState)
 
     //Tutorial
     setTimeout(function(){
-        gnotify("You MUST protect the leader", "info");
+        snotify(200, 180, "You MUST protect the leader", "info");
     }, 1000);
     setTimeout(function(){
-        gnotify("Use the ARROW keys to move around and SPACE to attack!", "info");
-    }, 3000);
+        snotify(600, 500, "Use the ARROW keys to move around and SPACE to attack!", "info");
+    }, 5000);
 
     //Creditos
     setTimeout(function(){
@@ -94,7 +94,6 @@ function init()
     }
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
-
     //Assets
     fpsLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#FFFFFF");
     level_label = new createjs.Text(GameState.level, "20px Arial", "#ffffff");
@@ -118,13 +117,13 @@ function init()
     Stage.addChild(fpsLabel);
 
 
-    setInterval(function(){
+    /*setInterval(function(){
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
             socket.emit("update_coords", {id: Player.id, 
                                           x: Player.obj.x,
                                           y: Player.obj.y,
                                           current_animation: Player.obj.currentAnimation});
-    }, 25);
+    }, 25);*/
 
     if (!createjs.Ticker.hasEventListener("tick")) { 
         createjs.Ticker.addEventListener("tick", gameLoop);
@@ -172,8 +171,7 @@ function gameLoop()
             setPos(EnemiesList[key].obj, enemy.x, enemy.y);
             EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
         }
-        
-    }   
+    }
 
     Player.update();
     Stage.update();
@@ -198,18 +196,3 @@ function gameOver()
     init();
 
 }
-
-function createEnemyList()
-{   EnemiesList = [];
-    for (var i=0; i< GameState.enemies.length; i++)
-    {   EnemiesList.push(new _Enemy(GameState.enemies[i].speed));
-
-        setPos( EnemiesList[i].obj,
-                GameState.enemies[i].x,
-                GameState.enemies[i].y
-        );
-        Stage.addChild(EnemiesList[i].obj);
-        //test enemy type
-    }
-}
-
