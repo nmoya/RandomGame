@@ -110,13 +110,18 @@ function _Player (id)
      };
     var spriteSheet = new createjs.SpriteSheet(data);
     this.crown = new createjs.Sprite(spriteSheet);
-
     this.isLeader = function(){
         return this.id == GameState.leader;
     }
    
     this.update = function()
     {
+        var speed = 8;
+        if (this.isLeader())
+            speed = GameState.config.Player.leader_speed;
+        else
+            speed = GameState.config.Player.regular_speed;
+
         if (outOfCanvas(this.obj))
             setPos(this.obj, randomInt(0, Canvas.width), randomInt(0, Canvas.height));
 
@@ -124,25 +129,25 @@ function _Player (id)
         {
             if (this.obj.currentAnimation != "up")
                 this.obj.gotoAndPlay("up");
-            setPos(this.obj, this.obj.x, this.obj.y-this.speed);
+            setPos(this.obj, this.obj.x, this.obj.y-speed);
         }
         if (Key.isDown(Key.LEFT))
         {
             if (this.obj.currentAnimation != "left")
                 this.obj.gotoAndPlay("left");
-            setPos(this.obj, this.obj.x-this.speed, this.obj.y);
+            setPos(this.obj, this.obj.x-speed, this.obj.y);
         }
         if (Key.isDown(Key.DOWN))
         {
             if (this.obj.currentAnimation != "down")
                 this.obj.gotoAndPlay("down");
-            setPos(this.obj, this.obj.x, this.obj.y+this.speed);
+            setPos(this.obj, this.obj.x, this.obj.y+speed);
         }
         if (Key.isDown(Key.RIGHT))
         {
             if (this.obj.currentAnimation != "right")
                 this.obj.gotoAndPlay("right");
-            setPos(this.obj, this.obj.x+this.speed, this.obj.y);
+            setPos(this.obj, this.obj.x+speed, this.obj.y);
         }
         if (Key.isDown(Key.SPACE) && !lastHit)
         {   lastHit = true;

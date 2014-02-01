@@ -13,6 +13,7 @@ var socket_list = {};
 var user_array = {};
 var GameState = {
     uid: 0,
+    config: {},
     leader: false,
     Enemies: {},
     Users: {},
@@ -130,8 +131,6 @@ function socket_functions()
                     hit_count+=1;
                 }
             }
-            if(hit_count >= GameState.level)
-                serv_io.sockets.emit("insert_blood", {x: player.x, y: player.y});
         })
 
         s.on("disconnect", function(){
@@ -160,6 +159,8 @@ function createGameState(level){
     GameState.leader = elect_leader();
     GameState.level = level;
     GameState.aliveEnemies = Math.floor((2 * Math.pow(GameState.level, 1.5)) + 5);
+    GameState.config = CONFIG;
+    GameState.config.Player.leader_speed = GameState.config.Player.regular_speed;
 
     GameState.Enemies = {};
     for (var i=0; i< GameState.aliveEnemies; i++)
@@ -168,34 +169,34 @@ function createGameState(level){
         if (direction == 0)
         {
             range = {
-                x: randomInt(CONFIG.Game.spawn_position["0x"][0], CONFIG.Game.spawn_position["0x"][1]),
-                y: randomInt(CONFIG.Game.spawn_position["0y"][0], CONFIG.Game.spawn_position["0y"][1])
+                x: randomInt(GameState.config.Game.spawn_position["0x"][0], GameState.config.Game.spawn_position["0x"][1]),
+                y: randomInt(GameState.config.Game.spawn_position["0y"][0], GameState.config.Game.spawn_position["0y"][1])
             }
         }
         else if (direction == 1){
             range = {
-                x: randomInt(CONFIG.Game.spawn_position["1x"][0], CONFIG.Game.spawn_position["1x"][1]),
-                y: randomInt(CONFIG.Game.spawn_position["1y"][0], CONFIG.Game.spawn_position["1y"][1])
+                x: randomInt(GameState.config.Game.spawn_position["1x"][0], GameState.config.Game.spawn_position["1x"][1]),
+                y: randomInt(GameState.config.Game.spawn_position["1y"][0], GameState.config.Game.spawn_position["1y"][1])
             }
         }
         else if (direction == 2){
             range = {
-                x: randomInt(CONFIG.Game.spawn_position["2x"][0], CONFIG.Game.spawn_position["2x"][1]),
-                y: randomInt(CONFIG.Game.spawn_position["2y"][0], CONFIG.Game.spawn_position["2y"][1])
+                x: randomInt(GameState.config.Game.spawn_position["2x"][0], GameState.config.Game.spawn_position["2x"][1]),
+                y: randomInt(GameState.config.Game.spawn_position["2y"][0], GameState.config.Game.spawn_position["2y"][1])
             }
         }
         else{
             range = {
-                x: randomInt(CONFIG.Game.spawn_position["3x"][0], CONFIG.Game.spawn_position["3x"][1]),
-                y: randomInt(CONFIG.Game.spawn_position["3y"][0], CONFIG.Game.spawn_position["3y"][1])
+                x: randomInt(GameState.config.Game.spawn_position["3x"][0], GameState.config.Game.spawn_position["3x"][1]),
+                y: randomInt(GameState.config.Game.spawn_position["3y"][0], GameState.config.Game.spawn_position["3y"][1])
             }
         }
         GameState.Enemies[i] = new ServerEnemy(range.x, range.y, 100,
-                               randomInt(CONFIG.Enemy.min_speed, CONFIG.Enemy.max_speed),
+                               randomInt(GameState.config.Enemy.min_speed, GameState.config.Enemy.max_speed),
                                 'user_enemy', "idle");
     }
     GameState.crown_position = {x: 0, y: 0};
-    serverinterval = setInterval(serverloop, 1000/CONFIG.Game.max_fps);
+    serverinterval = setInterval(serverloop, 1000/GameState.config.Game.max_fps);
 }
 function ServerEnemy(x, y, life, speed, type, current_animation)
 {
@@ -230,8 +231,17 @@ function ServerEnemy(x, y, life, speed, type, current_animation)
                 this.current_animation = "up";
         }
 
-        if (this.life > 0 && distance(this, leader) < CONFIG.Enemy.attack_radius)
-            GameOver();
+        if (this.life > 0 && distance(this, leader) < GameState.config.Enemy.attack_radius)
+        {
+            serv_io.sockets.emit("insert_blood", {x: leader.x, y: leader.y});
+            GameState.aliveEnemies -= 1;
+            this.life = 0;
+            GameState.config.Player.leader_speed = Math.floor(GameState.config.Player.leader_speed / 2);
+            console.log(CONFIG.Player.leader_speed);
+            if (GameState.config.Player.leader_speed == 0)
+                GameOver();
+        }
+            
 
     }
 
@@ -241,6 +251,7 @@ function destroyGameState(){
     clearInterval(serverinterval);
     GameState = {};
     GameState.Users = {};
+    GameState.config = CONFIG;
     GameState.Enemies = {};
 }
 function GameOver() {
@@ -269,8 +280,8 @@ function serverloop()
 }
 function setCrownPosition(user)
 {
-    return {x: user.x + CONFIG.Game.crown_offset[0],
-            y: user.y + CONFIG.Game.crown_offset[1]};
+    return {x: user.x + GameState.config.Game.crown_offset[0],
+            y: user.y + GameState.config.Game.crown_offset[1]};
 }
 function getLeader()
 {

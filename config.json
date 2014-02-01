@@ -1,6 +1,7 @@
 {
     "Player": {
-        "speed": 8,
+        "leader_speed": 8,
+        "regular_speed": 8,
         "attack": 100
     },
     "Enemy": {
