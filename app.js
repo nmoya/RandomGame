@@ -45,12 +45,13 @@ function init()
     });
     serv_io = io.listen(server);
     serv_io.set("log level", 1);
+    //http://stackoverflow.com/questions/8801014/socket-io-xhr-polling-vs-flashsocket-and-websocket
     serv_io.set('transports', [
-            //'websocket'
-           'flashsocket'
-          , 'htmlfile'
+            'websocket'
+          //,'flashsocket'
+          //, 'htmlfile'
           , 'xhr-polling'
-          , 'jsonp-polling'
+          //, 'jsonp-polling'
         ]);
     serv_io.set("polling duration", 3);
     serv_io.set("connect timeout", 1000);
