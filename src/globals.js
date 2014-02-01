@@ -41,6 +41,24 @@ function _Background(srcpath, width, height)
     this.obj = new createjs.Bitmap(srcpath);
     this.obj.setTransform(x=0, y=0, scaleX=Canvas.width/width, scaleY=Canvas.height/height);
 }
+function _Blood()
+{
+    data = {
+            images: [Image_Path+"blood.png"],
+            frames: {width:60, height:60},
+            animations: {
+                 start: 
+                 {
+                    frames: [0, 1, 2, 3],
+                    next: false,
+                    speed: 0.5
+                }
+            }
+        };
+    var spriteSheet = new createjs.SpriteSheet(data);
+    this.obj = new createjs.Sprite(spriteSheet, "start");
+    this.index = 1;
+}
 
 function randomFloat(min, max)
 {
@@ -80,8 +98,4 @@ function outOfCanvasY(object)
         return true;
     else
         return false;
-}
-function distance(object1, object2)
-{
-    return Math.sqrt( (object1.x-object2.x)*(object1.x-object2.x) + (object1.y-object2.y)*(object1.y-object2.y));
 }

@@ -115,30 +115,6 @@ function init()
     Stage.addChild(Player.crown);
     Stage.addChild(fpsLabel);
 
-    /*setInterval(function ()
-    {   if(GameState.leader == User.id)
-        {   var nullEnemies = true;
-            for (var i = EnemiesList.length - 1; i >= 0; i--)
-            {   nullEnemies = nullEnemies && (EnemiesList[i] == null);
-            }
-            if(nullEnemies && EnemiesList.length > 0 && new_game == false)
-            {   GameState.aliveEnemies = 0;
-                socket.emit("new_level", User);
-                new_game = true;
-            }
-            if (GameState.level == 0 && new_game == false)
-            {
-                GameState.aliveEnemies = 0;
-                socket.emit("new_level", User);
-                new_game = true;
-            }
-        }
-    }, 1000);*/
-
-    setInterval(function ()
-    {   
-        new_game = false;
-    }, 10000);
 
     setInterval(function(){
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
@@ -187,8 +163,14 @@ function gameLoop()
             EnemiesList[key] = new _Enemy(enemy.speed);
             Stage.addChild(EnemiesList[key].obj);
         }
-        setPos(EnemiesList[key].obj, enemy.x, enemy.y);
-        EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
+        if (enemy.life <= 0)
+            Stage.removeChild(EnemiesList[key].obj);
+        else
+        {
+            setPos(EnemiesList[key].obj, enemy.x, enemy.y);
+            EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
+        }
+        
     }   
 
     Player.update();

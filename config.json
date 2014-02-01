@@ -1,12 +1,13 @@
 {
     "Player": {
-        "speed": 6,
+        "speed": 8,
         "attack": 100
     },
     "Enemy": {
-        "min_speed": 1,
-        "max_speed": 3,
-        "life": 100
+        "min_speed": 3,
+        "max_speed": 6,
+        "life": 100,
+        "attack_radius": 5
     },
     "Game": {
         "max_fps": 20,
