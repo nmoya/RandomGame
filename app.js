@@ -3,26 +3,24 @@ var express = require('express');
 var http = require('http');
 var app = express();
 var io = require('socket.io');
-
+var fs = require("fs");
 var serv_io = null;
 var clients = 0;
 
-socket_list = {};
-user_array = {};
-var cleanGameState = {
-    leader: false,
-    enemies: [],
-    level: 0,
-    aliveEnemies: 0
-};
-
+var serverinterval = null;
+var CONFIG = {};
+var socket_list = {};
+var user_array = {};
 var GameState = {
+    uid: 0,
     leader: false,
-    enemies: [],
+    Enemies: {},
+    Users: {},
     level: 0,
     aliveEnemies: 0,
-    crownPosition: { x: 0, y: 0}
+    crown_position: { x: 0, y: 0}
 }
+var user_id = 0;
 
 
 //Require other files 
@@ -56,6 +54,14 @@ function init()
         ]);
     serv_io.set("polling duration", 3);
     serv_io.set("connect timeout", 1000);
+
+    fs.readFile("config.json", 'utf8', function (err, data) {
+      if (err) {console.log('Error: ' + err);
+                return;}
+ 
+    CONFIG = JSON.parse(data);
+    console.dir(CONFIG);
+    });
 }
 
 //Treat all GET and POST requests to the server
@@ -79,107 +85,205 @@ function treatRequests()
     });
 }
 
-
 //Responsible to send events to the client side.
 function socket_functions()
 {   //On connection. S is the file of a single player!!!
+
     serv_io.sockets.on("connection", function(s){ 
         //Update online players tag
         clients += 1;
         serv_io.sockets.emit("online", {online: clients});
         socket_list[s.id] = s;
         console.log("Online: " + clients);
-
         
-        //When a user opens the website
-        s.on("user_connected", function(user){
-            user_array[user.id] = user;
-            serv_io.sockets.emit("send_data", user_array);
-        })
+        //If the client is alone, a new game needs to be created
+        GameState.Users[s.id] = {x: 0, y: 0, current_animation: "idle"};
+        if (clients == 1)
+            createGameState(1);
+        
 
-        s.on("getGameState", function(){
-            if (clients == 1)
-            {   GameState.leader = s.id;
-                GameState.aliveEnemies = 0;
-            }
-            s.emit("setGameState", GameState);
-        })
-
-        s.on("update_coords", function(user){
-            if (typeof user_array[s.id] != 'undefined')
+        s.on("update_coords", function(player){
+            if (typeof GameState.Users[s.id] != 'undefined')
             {
-                user_array[s.id].x = user.x;
-                user_array[s.id].y = user.y;
-                serv_io.sockets.emit("send_data", user_array);
+                GameState.Users[s.id].x = player.x;
+                GameState.Users[s.id].y = player.y;
+                GameState.Users[s.id].current_animation = player.current_animation;
+
+                if (s.id == GameState.leader)
+                    GameState.crown_position = setCrownPosition(player);
+                    
             }
         })
 
-        s.on("new_level", function(user)
-        {   serv_io.sockets.emit("reset");
-            GameState.leader = elect_leader();
-            GameState.enemies = [];
-            GameState.aliveEnemies = -1;
-            GameState.level += 1;
-            serv_io.sockets.emit("cbroadcast", GameState);
+        s.on("send_hit", function(player){
+            var hit_count = 0;
+            for (var i in GameState.Enemies)
+            {   
+                if (GameState.Enemies[i].life > 0 && distance(GameState.Enemies[i], player) < 75)
+                {   
+                    GameState.Enemies[i].life -= player.damage;
+                    GameState.aliveEnemies -= 1;
+                    hit_count+=1;
+                }
+            }
+            if(hit_count >= GameState.level)
+                serv_io.sockets.emit("insert_blood", {x: player.x, y: player.y});
         })
-
-        s.on("game_over", function(user){
-            serv_io.sockets.emit("reset");
-            GameState.leader = elect_leader();
-            GameState.enemies = [];
-            GameState.aliveEnemies = -1;
-            GameState.level = 1;
-            serv_io.sockets.emit("cbroadcast", GameState);
-        })
-
-        //send the hit to lider
-        s.on("send_hit", function(hit)
-        {   socket_list[GameState.leader].emit("lider_hit", hit);
-        })
-
 
         s.on("disconnect", function(){
             //Updates the online tag
             clients -= 1;
             serv_io.sockets.emit("online", {online: clients});
-            delete user_array[s.id];
-            delete socket_list[s.id];
-            serv_io.sockets.emit("send_data", user_array);
             console.log("Online: " + clients);
+            delete socket_list[s.id];
+
+            delete GameState.Users[s.id];
+            serv_io.sockets.emit("user_disconnected", s.id);
 
             if (clients == 0)
-            {
-                GameState = {
-                    leader: false,
-                    enemies: [],
-                    level: 0,
-                    aliveEnemies: 0,
-                    crownPosition: { x: 0, y: 0}
-                }
-            }
+                destroyGameState();
             else if (s.id == GameState.leader)
             {
                 GameState.leader = elect_leader();
-                serv_io.sockets.emit("cbroadcast", GameState);
+                GameState.crown_position = setCrownPosition(GameState.Users[GameState.leader]);
             }
         })
-
-        s.on("sbroadcast", function(data){
-            serv_io.sockets.emit("cbroadcast", data);
-        });
-
     
     });
 }
+function createGameState(level){
+    GameState.uid = 1;
+    GameState.leader = elect_leader();
+    GameState.level = level;
+    GameState.aliveEnemies = Math.floor((2 * Math.pow(GameState.level, 1.5)) + 5);
 
+    GameState.Enemies = {};
+    for (var i=0; i< GameState.aliveEnemies; i++)
+    {   
+        var direction = randomInt(0, 4);
+        if (direction == 0)
+        {
+            range = {
+                x: randomInt(CONFIG.Game.spawn_position["0x"][0], CONFIG.Game.spawn_position["0x"][1]),
+                y: randomInt(CONFIG.Game.spawn_position["0y"][0], CONFIG.Game.spawn_position["0y"][1])
+            }
+        }
+        else if (direction == 1){
+            range = {
+                x: randomInt(CONFIG.Game.spawn_position["1x"][0], CONFIG.Game.spawn_position["1x"][1]),
+                y: randomInt(CONFIG.Game.spawn_position["1y"][0], CONFIG.Game.spawn_position["1y"][1])
+            }
+        }
+        else if (direction == 2){
+            range = {
+                x: randomInt(CONFIG.Game.spawn_position["2x"][0], CONFIG.Game.spawn_position["2x"][1]),
+                y: randomInt(CONFIG.Game.spawn_position["2y"][0], CONFIG.Game.spawn_position["2y"][1])
+            }
+        }
+        else{
+            range = {
+                x: randomInt(CONFIG.Game.spawn_position["3x"][0], CONFIG.Game.spawn_position["3x"][1]),
+                y: randomInt(CONFIG.Game.spawn_position["3y"][0], CONFIG.Game.spawn_position["3y"][1])
+            }
+        }
+        GameState.Enemies[i] = new ServerEnemy(range.x, range.y, 100,
+                               randomInt(CONFIG.Enemy.min_speed, CONFIG.Enemy.max_speed),
+                                'user_enemy', "idle");
+    }
+    GameState.crown_position = {x: 0, y: 0};
+    serverinterval = setInterval(serverloop, 1000/CONFIG.Game.max_fps);
+}
+function ServerEnemy(x, y, life, speed, type, current_animation)
+{
+    this.x = x;
+    this.y = y;
+    this.life = life;
+    this.speed = speed;
+    this.type = type;
+    this.current_animation = current_animation;
+
+    this.update = function (){
+        leader = getLeader();
+
+        if (this.x < leader.x)
+        {   this.x += this.speed;
+            if (this.current_animation != "right")
+                this.current_animation = "right";
+        }
+        else if (this.x > leader.x)
+        {   this.x -= this.speed;
+            if (this.current_animation != "left")
+                this.current_animation = "left";
+        }
+        if (this.y < leader.y)
+        {   this.y += this.speed;
+            if (this.current_animation != "down")
+                this.current_animation = "down";
+        }
+        else if (this.y > leader.y)
+        {   this.y -= this.speed;
+            if (this.current_animation != "up")
+                this.current_animation = "up";
+        }
+
+        if (this.life > 0 && distance(this, leader) < CONFIG.Enemy.attack_radius)
+            GameOver();
+
+    }
+
+}
+
+function destroyGameState(){
+    clearInterval(serverinterval);
+    GameState = {};
+    GameState.Users = {};
+    GameState.Enemies = {};
+}
+function GameOver() {
+    clearInterval(serverinterval);
+    serv_io.sockets.emit("reset");
+    serv_io.sockets.emit('bcast', {message: "Game over! Protect the leader!", type: "error"});
+    setTimeout(createGameState(1), 3000);
+}
+function NextLevel(){
+    clearInterval(serverinterval);
+    serv_io.sockets.emit("reset");
+    serv_io.sockets.emit('bcast', {message: "Next Level! Be Prepared!", type: "error"});
+    setTimeout(createGameState(GameState.level+1), 3000);
+}
+function serverloop()
+{
+    for(var key in GameState.Enemies)
+        if (GameState.Enemies[key])
+            GameState.Enemies[key].update();
+
+    if (GameState.aliveEnemies == 0)
+        NextLevel();
+    
+    GameState.uid += 1;
+    serv_io.sockets.emit('setGameState', GameState);
+}
+function setCrownPosition(user)
+{
+    return {x: user.x + CONFIG.Game.crown_offset[0],
+            y: user.y + CONFIG.Game.crown_offset[1]};
+}
+function getLeader()
+{
+    return GameState.Users[GameState.leader];
+}
 function elect_leader()
 {
     var user_list = []
-    for(var k in user_array)
+    for(var k in GameState.Users)
         user_list.push(k);
     return user_list[randomInt(0, user_list.length-1)];
 }
 function randomInt(min, max)
 {
     return Math.round(min + Math.random()*(max-min));
+}
+function distance(object1, object2)
+{
+    return Math.sqrt( (object1.x-object2.x)*(object1.x-object2.x) + (object1.y-object2.y)*(object1.y-object2.y));
 }

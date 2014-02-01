@@ -1,8 +1,5 @@
-var lstFriends = {}
-
 //Assets
 var fpsLabel     = '';
-var Player       = null;
 var background   = null;
 var messageField = null;
 var loading_length = 330;
@@ -14,7 +11,7 @@ var gameover_label = null;
 var new_game = false;
 var music = false;
 
-function main() 
+function main(GameState) 
 {
     if (!createjs.Sound.initializeDefaultPlugins()) {
         alert("Cannot initializeDefaultPlugins");
@@ -25,7 +22,7 @@ function main()
     Canvas      = new _Canvas($("#mainCanvas")[0]);
     Mouse       = new _Mouse();
     Stage       = new createjs.Stage("mainCanvas");
-    Background = new _Background(Image_Path+"loading.jpg", 1806, 1148);    
+    Background  = new _Background(Image_Path+"loading.jpg", 1806, 1148);    
 
     window.addEventListener('keyup', function(event) { Key.onKeyup(event); }, false);
     window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
@@ -55,7 +52,7 @@ function main()
         gnotify("Use the ARROW keys to move around and SPACE to attack!", "info");
     }, 3000);
 
-    //Créditos
+    //Creditos
     setTimeout(function(){
         gnotify("Nikolas Moya, programador.", "success");
     }, 12000);
@@ -88,11 +85,10 @@ function updateLoading()
 
 function init()
 {
-    Canvas.tag.onclick = null;
     Stage.removeAllChildren();
     if (music == false)
     {
-        createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);    
+        //createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);    
         music = true;
     }
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
@@ -104,8 +100,6 @@ function init()
     alive_label = new createjs.Text(GameState.aliveEnemies, "16px Arial", "#ffffff");
     setPos(alive_label, Canvas.width-100, 50);
 
-    //Structures
-    Player = new _Player();
 
     setPos(Player.obj, Canvas.width/2, Canvas.height/2);
     setPos(Player.sign, Canvas.width/2+5, Canvas.height/2+43);
@@ -114,68 +108,26 @@ function init()
     //Objects added example
     Stage.addChild(Background.obj);
     Stage.addChild(Player.sign);
-    //Stage.addChild(Player.horizontal_weapon);
-    //Stage.addChild(Player.vertical_weapon);
     Stage.addChild(Player.weapon);
-    // Stage.addChild(alive_label);
+    Stage.addChild(alive_label);
     Stage.addChild(level_label);
     Stage.addChild(Player.obj);
     Stage.addChild(Player.crown);
     Stage.addChild(fpsLabel);
 
-    setInterval(function ()
-    {   if(GameState.leader == User.id)
-        {   var nullEnemies = true;
-            for (var i = EnemiesList.length - 1; i >= 0; i--)
-            {   nullEnemies = nullEnemies && (EnemiesList[i] == null);
-            }
-            if(nullEnemies && EnemiesList.length > 0 && new_game == false)
-            {   GameState.aliveEnemies = 0;
-                socket.emit("new_level", User);
-                new_game = true;
-            }
-            if (GameState.level == 0 && new_game == false)
-            {
-                GameState.aliveEnemies = 0;
-                socket.emit("new_level", User);
-                new_game = true;
-            }
-        }
-    }, 1000);
-
-    setInterval(function ()
-    {   
-        new_game = false;
-    }, 10000);
-
-    setInterval(function(){
-        if (GameState.leader == User.id && GameState.aliveEnemies > 0)
-            socket.emit("sbroadcast", GameState);
-            
-    }, 100);
 
     setInterval(function(){
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
-            socket.emit("update_coords", User);
+            socket.emit("update_coords", {id: Player.id, 
+                                          x: Player.obj.x,
+                                          y: Player.obj.y,
+                                          current_animation: Player.obj.currentAnimation});
     }, 25);
 
     if (!createjs.Ticker.hasEventListener("tick")) { 
         createjs.Ticker.addEventListener("tick", gameLoop);
     }
     createjs.Ticker.setFPS(30);
-
-    //Clean user positons
-    setInterval(function(){
-        for(var k in lstFriends)
-        {
-            if (typeof Users[k] == 'undefined')
-            {
-                Stage.removeChild(lstFriends[k].obj);
-                delete lstFriends[k];
-            }
-        }
-    }, 5000);
-
 
 }
 
@@ -185,49 +137,43 @@ function gameLoop()
     fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
     level_label.text = "Level: " + GameState.level;
     alive_label.text = "Alive: " + GameState.aliveEnemies;
-
-    if (GameState.aliveEnemies == 0 && GameState.leader == User.id && new_game == false)
-    {
-        socket.emit("new_level", User);
-        new_game = true;
-    }
-        
-
-    if (GameState.enemies.length != EnemiesList.length)
-        createEnemyList();
     
     //Update users' positions
-    for(var key in Users)
+    for(var key in GameState.Users)
     {
-        var user_key = {x: Users[key].x * Canvas.width, y: Users[key].y * Canvas.height};
-        if (typeof lstFriends[key] == 'undefined') {
-            lstFriends[key] = new _Player();
-            Stage.addChild(lstFriends[key].obj);
-        }
-        setPos(lstFriends[key].obj, user_key.x, user_key.y);
-    }    
-
-    for (var i = 0; i < EnemiesList.length; i++)
-    {   if (EnemiesList[i] != null && GameState.enemies[i].life > 0)
-        {   if (GameState.leader == User.id)
-            {   EnemiesList[i].update();
-                if (EnemiesList[i] != null)
-                    setPos(GameState.enemies[i], EnemiesList[i].obj.x/Canvas.width, EnemiesList[i].obj.y/Canvas.height);   
+        if (key != last_user_removed)
+        {
+            var temp_user = GameState.Users[key];
+            if (typeof UserList[key] == 'undefined') {
+                UserList[key] = new _Player(0);
+                Stage.addChild(UserList[key].obj);
+                console.log("Adding user of id: " + key);
             }
-            else //If it is a regular player, update the enemy positions
-            {   setPos(EnemiesList[i].obj, GameState.enemies[i].x*Canvas.width, GameState.enemies[i].y*Canvas.height);
-            }
-        }
-        else if (EnemiesList[i] != null && GameState.enemies[i].life <= 0)
-        {   Stage.removeChild(EnemiesList[i].obj);
-            EnemiesList[i] = null;
+            setPos(UserList[key].obj, temp_user.x, temp_user.y);
+            if (UserList[key].obj.currentAnimation != temp_user.current_animation)
+                UserList[key].obj.gotoAndPlay(temp_user.current_animation);
         }
     }
+    //Update enemies' positions
+    for(var key in GameState.Enemies)
+    {
+        var enemy = GameState.Enemies[key];
+        if (typeof EnemiesList[key] == 'undefined') 
+        {
+            EnemiesList[key] = new _Enemy(enemy.speed);
+            Stage.addChild(EnemiesList[key].obj);
+        }
+        if (enemy.life <= 0)
+            Stage.removeChild(EnemiesList[key].obj);
+        else
+        {
+            setPos(EnemiesList[key].obj, enemy.x, enemy.y);
+            EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
+        }
+        
+    }   
+
     Player.update();
-    if (GameState.leader == User.id)
-        setPos(GameState.crownPosition, Player.crown.x/Canvas.width, Player.crown.y/Canvas.height);
-    else
-        setPos(Player.crown, GameState.crownPosition.x*Canvas.width, GameState.crownPosition.y*Canvas.height);
     Stage.update();
 }
 
@@ -243,7 +189,7 @@ function gameOver()
 
 
     Stage.removeAllChildren();
-    lstFriends = {};
+    UserList = {};
     EnemiesList = [];
     socket.emit("game_over", User);
     gnotify("GAME OVER", "error");
@@ -265,40 +211,3 @@ function createEnemyList()
     }
 }
 
-function createLevel()
-{   GameState.aliveEnemies = Math.floor((2 * Math.pow(GameState.level, 1.5)) + 5);
-    for (var i=0; i< GameState.aliveEnemies; i++)
-    {   
-        var direction = randomInt(0, 4);
-        if (direction == 0)
-        {
-            range = {
-                x: randomInt(Canvas.width, Canvas.width*2),
-                y: randomInt(0, Canvas.height)
-            }
-        }
-        else if (direction == 1){
-            range = {
-                x: randomInt(0, Canvas.width),
-                y: randomInt(0, -Canvas.height*2)
-            }
-        }
-        else if (direction == 2){
-            range = {
-                x: randomInt(-Canvas.width*2, 0),
-                y: randomInt(0, Canvas.height)
-            }
-        }
-        else{
-            range = {
-                x: randomInt(0, Canvas.width),
-                y: randomInt(Canvas.height, Canvas.height*2)
-            }
-        }
-        GameState.enemies.push({x: range.x,
-                                y: range.y,
-                                life: 100,
-                                speed: randomInt(1, 3),
-                                type: 'user_enemy'});
-    }
-}

@@ -3,27 +3,23 @@ var Canvas      = null;
 var Mouse       = null;
 var Stage       = null;
 var Background  = null;
-var LOCALHOST   = !document.location.hostname == "localhost"
-var EnemiesList = [];
+var EnemiesList = {};
+var Player      = null;
+var UserList = {}
 
-var particles = [];
-var BLOOD       = null;
+
+var particles  = [];
+var BLOOD      = null;
 var Image_Path = "./images/";
 var Sound_Path = "./sounds/";
+var last_user_removed = null;
 
-var GameState = {
-        leader: false,
-        enemies: [],
-        level: 0,
-        aliveEnemies: 0,
-        crownPosition: {x: 0, y:0}
-}
+var GameState = {}
 
 
 //Mouse constructor
 function _Mouse() {this.x=0; this.y=0;}
 function _Canvas(tag_object) {
-
     this.tag = tag_object;
     //XX - Resize
     this.context = this.tag.getContext('2d');
@@ -44,6 +40,24 @@ function _Background(srcpath, width, height)
 {
     this.obj = new createjs.Bitmap(srcpath);
     this.obj.setTransform(x=0, y=0, scaleX=Canvas.width/width, scaleY=Canvas.height/height);
+}
+function _Blood()
+{
+    data = {
+            images: [Image_Path+"blood.png"],
+            frames: {width:60, height:60},
+            animations: {
+                 start: 
+                 {
+                    frames: [0, 1, 2, 3],
+                    next: false,
+                    speed: 0.5
+                }
+            }
+        };
+    var spriteSheet = new createjs.SpriteSheet(data);
+    this.obj = new createjs.Sprite(spriteSheet, "start");
+    this.index = 1;
 }
 
 function randomFloat(min, max)
@@ -84,8 +98,4 @@ function outOfCanvasY(object)
         return true;
     else
         return false;
-}
-function distance(object1, object2)
-{
-    return Math.sqrt( (object1.x-object2.x)*(object1.x-object2.x) + (object1.y-object2.y)*(object1.y-object2.y));
 }

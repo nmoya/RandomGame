@@ -1,15 +1,8 @@
 var socket = null;
-var Users = {};
-var User = null;
 
 function listen()
 {
     socket = io.connect('/');
-    User = {
-        id: 0,
-        x: 0,
-        y: 0,
-    }
 
     //Receives the broadcast messages
     socket.on('bcast', function (data) {
@@ -22,75 +15,41 @@ function listen()
     });
 
     socket.on("connect", function(){
-        User.id = socket.socket.sessionid;
-        socket.emit("user_connected", User);
-        //Just to make sure that the clients number is accurate.
-        socket.emit("getGameState");
-    });
-
-    //Users walk
-    socket.on("send_data", function(list){
-        Users = list;
-        delete Users[User.id];
+        Player = new _Player(socket.socket.sessionid);
     });
 
     //Set the game state to only one user.
     socket.on("setGameState", function (gs) {
         GameState = gs;
+        delete GameState.Users[Player.id];
     });
 
-    //Set the life of enemy has hited by other user
-    socket.on("lider_hit", function (hit)
-    {   if(GameState.enemies[hit.pos].life > 0)
-        {   GameState.enemies[hit.pos].life -= hit.life;
-            if (GameState.enemies[hit.pos].life <= 0)
-            {   GameState.aliveEnemies --;
-            }
-        }
-
-        if(GameState.aliveEnemies <= 0)
-        {   socket.emit("new_level", User);
-        }
+    socket.on("user_disconnected", function (user_id) {
+        Stage.removeChild(UserList[user_id].obj);
+        last_user_removed = user_id;
+        delete UserList[user_id];
     });
 
     socket.on("reset", function()
-    {   for (var i = EnemiesList.length - 1; i >= 0; i--)
-        {   if(EnemiesList[i] != null)
-            {   Stage.removeChild(EnemiesList[i].obj);
-                EnemiesList[i] = null;
-            }
-        }
-        EnemiesList = [];
-    });
-
-    //Set the game state via broadcast. (All users)
-    socket.on("cbroadcast", function(data)
-    {   GameState = data;
-        if (GameState.leader == User.id && GameState.aliveEnemies == -1)
-        {   gnotify("You have been elected as the leader!", "success");
-            createLevel();
-            socket.emit("sbroadcast", GameState);
-        }
-        /*if (GameState.aliveEnemies > 0 && EnemiesList.length == 0)
+    {   
+        for (var en in EnemiesList)
         {   
-            console.log("here");
-            f = function (){
-                if (GameScreen)
-                {
-                    if (EnemiesList.length == 0)
-                        createEnemyList();
-                }
-                    
-                else
-                    setTimeout(f, 100);
+            if(EnemiesList[en] != null)
+            {   
+                Stage.removeChild(EnemiesList[en].obj);
+                EnemiesList[en] = null;
             }
-            f();
-        }*/
-
-        // Test if have a level change (in this case: EnemiesList != 0)
-        
+        }
+        EnemiesList = {};
     });
 
+    socket.on("insert_blood", function(pos){
+        if (!BLOOD)
+            BLOOD = new _Blood();
+        setPos(BLOOD.obj, pos.x, pos.y);
+        Stage.addChildAt(BLOOD.obj, BLOOD.index);
+        BLOOD.index+=1;
+    })
 
 }
 

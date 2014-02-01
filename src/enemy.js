@@ -30,34 +30,4 @@ function _Enemy(speed)
 	this.speed = speed;
 	this.radiusToCollide = 10;
 
-	this.update = function()
-	{	if (this.obj.x < Player.obj.x)
-		{	this.obj.x += this.speed;
-            if (this.obj.currentAnimation != "right")
-			    this.obj.gotoAndPlay("right");
-		}
-		else if (this.obj.x > Player.obj.x)
-		{	this.obj.x -= this.speed;
-            if (this.obj.currentAnimation != "left")
-                this.obj.gotoAndPlay("left");
-		}
-		if (this.obj.y < Player.obj.y)
-		{	this.obj.y += this.speed;
-            if (this.obj.currentAnimation != "down")
-                this.obj.gotoAndPlay("down");
-		}
-		else if (this.obj.y > Player.obj.y)
-		{	this.obj.y -= this.speed;
-            if (this.obj.currentAnimation != "up")
-                this.obj.gotoAndPlay("up");
-		}
-
-        if (distance(this.obj, Player.obj) < 5)
-        {
-            gameOver();
-        }
-	}
-	this.setStartPosition = function()
-	{	setPos(this.obj, randomInt(Canvas.width, Canvas.width*2), randomInt(0, Canvas.height));
-	}
 }
