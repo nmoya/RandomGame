@@ -46,8 +46,8 @@ function init()
     serv_io = io.listen(server);
     serv_io.set("log level", 1);
     serv_io.set('transports', [
-            'websocket'
-          , 'flashsocket'
+            //'websocket'
+           'flashsocket'
           , 'htmlfile'
           , 'xhr-polling'
           , 'jsonp-polling'
