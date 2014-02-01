@@ -46,6 +46,7 @@ function init()
     serv_io = io.listen(server);
     serv_io.set("log level", 1);
     //http://stackoverflow.com/questions/8801014/socket-io-xhr-polling-vs-flashsocket-and-websocket
+    //https://blog.heroku.com/archives/2013/10/8/websockets-public-beta
     serv_io.set('transports', [
             'websocket'
           //,'flashsocket'
@@ -54,7 +55,7 @@ function init()
           //, 'jsonp-polling'
         ]);
     serv_io.set("polling duration", 3);
-    serv_io.set("connect timeout", 1000);
+    serv_io.set("connect timeout", 10);
 
     fs.readFile("config.json", 'utf8', function (err, data) {
       if (err) {console.log('Error: ' + err);
@@ -100,7 +101,7 @@ function socket_functions()
         //If the client is alone, a new game needs to be created
         GameState.Users[s.id] = {x: 0, y: 0, current_animation: "idle"};
         if (clients == 1)
-            createGameState(1);
+            setTimeout(createGameState(1), 3000);
         
 
         s.on("update_coords", function(player){
