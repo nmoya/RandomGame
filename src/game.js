@@ -10,6 +10,8 @@ var alive_label = null;
 var gameover_label = null;
 var new_game = false;
 var music = false;
+var message_label = null;
+var placed = false;
 
 function main(GameState) 
 {
@@ -46,10 +48,10 @@ function main(GameState)
 
     //Tutorial
     setTimeout(function(){
-        snotify(200, 180, "You MUST protect the leader", "info");
+        snotify(0.15, 0.25, "You MUST protect the leader", "info");
     }, 1000);
     setTimeout(function(){
-        snotify(600, 500, "Use the ARROW keys to move around and SPACE to attack!", "info");
+        snotify(0.5, 0.7, "Use the ARROW keys to move around and SPACE to attack!", "info");
     }, 5000);
 
     //Creditos
@@ -100,7 +102,8 @@ function init()
     setPos(level_label, Canvas.width-100, 10);
     alive_label = new createjs.Text(GameState.aliveEnemies, "16px Arial", "#ffffff");
     setPos(alive_label, Canvas.width-100, 50);
-
+    message_label = new createjs.Text("", "48px Arial", "#ffffff");
+    message_label.textAlign = "center";
 
     setPos(Player.obj, Canvas.width/2, Canvas.height/2);
     setPos(Player.sign, Canvas.width/2+5, Canvas.height/2+43);
@@ -115,6 +118,7 @@ function init()
     Stage.addChild(Player.obj);
     Stage.addChild(Player.crown);
     Stage.addChild(fpsLabel);
+    Stage.addChild(message_label);
 
 
     /*setInterval(function(){
@@ -177,7 +181,16 @@ function gameLoop()
     Stage.update();
 }
 
-
+function placeMessage(x, y, message){
+    setPos(message_label, x*Canvas.width, y*Canvas.height);
+    message_label.text = message;
+    setTimeout(function(){
+        console.log("removing");
+        message_label.Text = "";
+        setPos(message_label, -999, -999);
+    }, 3000);
+    
+}
 //CHECK
 function gameOver()
 {

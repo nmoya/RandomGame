@@ -162,6 +162,8 @@ function createGameState(level){
     GameState.config = CONFIG;
     GameState.config.Player.leader_speed = GameState.config.Player.regular_speed;
 
+    socket_list[GameState.leader].emit("send_message", {x: 0.5, y:0.5, message: "You are the leader!"});
+
     GameState.Enemies = {};
     for (var i=0; i< GameState.aliveEnemies; i++)
     {   
@@ -257,13 +259,13 @@ function destroyGameState(){
 function GameOver() {
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
-    serv_io.sockets.emit('bcast', {message: "Game over! Protect the leader!", type: "error"});
+    serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "GAME OVER! The leader died."});
     setTimeout(createGameState(1), 3000);
 }
 function NextLevel(){
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
-    serv_io.sockets.emit('bcast', {message: "Next Level! Be Prepared!", type: "error"});
+    serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "Level Complete"});
     setTimeout(createGameState(GameState.level+1), 3000);
 }
 function serverloop()

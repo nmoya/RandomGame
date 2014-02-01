@@ -33,7 +33,7 @@ function enotify (element, text, type) {
 function snotify (x, y, text, type){
   configs = {className: type, arrowShow: false, autoHideDelay: 3000, clickToHide: false};
   var div = document.createElement('a');
-  div.setAttribute("style", "position:absolute; top:"+y+"; left:"+x+";");
+  div.setAttribute("style", "position:absolute; top:"+y*Canvas.height+"; left:"+x*Canvas.width+";");
   div.setAttribute("id", "tempDiv");
   document.getElementById('holder').appendChild(div);
   $.notify($("#tempDiv"), text, configs);

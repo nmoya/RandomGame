@@ -51,6 +51,10 @@ function listen()
         BLOOD.index+=1;
     })
 
+    socket.on("send_message", function(data){
+         placeMessage(data.x, data.y, data.message);
+    })
+
 }
 
 
