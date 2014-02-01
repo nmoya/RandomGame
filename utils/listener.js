@@ -40,15 +40,17 @@ function listen()
                 EnemiesList[en] = null;
             }
         }
+        for (var b in BLOOD)
+            Stage.removeChild(BLOOD[b].obj);
+        BLOOD = [];
         EnemiesList = {};
     });
 
     socket.on("insert_blood", function(pos){
-        if (!BLOOD)
-            BLOOD = new _Blood();
-        setPos(BLOOD.obj, pos.x, pos.y);
-        Stage.addChildAt(BLOOD.obj, BLOOD.index);
-        BLOOD.index+=1;
+        var b = new _Blood()
+        BLOOD.push(b);
+        setPos(b.obj, pos.x, pos.y);
+        Stage.addChildAt(b.obj, b.index);
     })
 
     socket.on("send_message", function(data){

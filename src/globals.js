@@ -9,7 +9,7 @@ var UserList = {}
 
 
 var particles  = [];
-var BLOOD      = null;
+var BLOOD      = [];
 var Image_Path = "./images/";
 var Sound_Path = "./sounds/";
 var last_user_removed = null;

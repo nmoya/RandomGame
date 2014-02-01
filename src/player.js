@@ -117,11 +117,13 @@ function _Player (id)
     this.update = function()
     {
         var speed = 8;
-        if (this.isLeader())
-            speed = GameState.config.Player.leader_speed;
-        else
-            speed = GameState.config.Player.regular_speed;
-
+        if (GameState.config)
+        {
+            if (this.isLeader())
+                speed = GameState.config.Player.leader_speed;
+            else
+                speed = GameState.config.Player.regular_speed;
+        }
         if (outOfCanvas(this.obj))
             setPos(this.obj, randomInt(0, Canvas.width), randomInt(0, Canvas.height));
 

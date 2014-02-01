@@ -200,6 +200,7 @@ function createGameState(level){
                                randomInt(GameState.config.Enemy.min_speed, GameState.config.Enemy.max_speed),
                                 'user_enemy', "idle");
     }
+    console.log(GameState.Enemies);
     GameState.crown_position = {x: 0, y: 0};
     serverinterval = setInterval(serverloop, 1000/GameState.config.Game.max_fps);
 }
@@ -227,12 +228,12 @@ function ServerEnemy(x, y, life, speed, type, current_animation)
         }
         if (this.y < leader.y)
         {   this.y += this.speed;
-            if (this.current_animation != "down")
+            if (this.current_animation != "down" && this.current_animation != "right" && this.current_animation != "left")
                 this.current_animation = "down";
         }
         else if (this.y > leader.y)
         {   this.y -= this.speed;
-            if (this.current_animation != "up")
+            if (this.current_animation != "up" && this.current_animation != "right" && this.current_animation != "left")
                 this.current_animation = "up";
         }
 
@@ -262,21 +263,16 @@ function GameOver(callback) {
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
     serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "GAME OVER! The leader died."});
-    setTimeout(function(){
-        createGameState(1);
-    }, 3000);
+    createGameState(1);
 }
 function NextLevel(){
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
     serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "Level Complete"});
-    setTimeout(function(){
-        createGameState(GameState.level+1);
-    }, 3000);
+    createGameState(GameState.level+1);
 }
 function serverloop()
 {
-    console.log("Game loop");
     for(var key in GameState.Enemies)
         if (GameState.Enemies[key])
             GameState.Enemies[key].update();

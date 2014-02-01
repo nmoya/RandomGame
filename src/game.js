@@ -152,7 +152,6 @@ function gameLoop()
             if (typeof UserList[key] == 'undefined') {
                 UserList[key] = new _Player(0);
                 Stage.addChild(UserList[key].obj);
-                console.log("Adding user of id: " + key);
             }
             setPos(UserList[key].obj, temp_user.x, temp_user.y);
             if (UserList[key].obj.currentAnimation != temp_user.current_animation)
@@ -172,6 +171,8 @@ function gameLoop()
             Stage.removeChild(EnemiesList[key].obj);
         else
         {
+            if (!Stage.contains(EnemiesList[key].obj))
+                Stage.addChild(EnemiesList[key].obj);
             setPos(EnemiesList[key].obj, enemy.x, enemy.y);
             EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
         }
@@ -185,7 +186,6 @@ function placeMessage(x, y, message){
     setPos(message_label, x*Canvas.width, y*Canvas.height);
     message_label.text = message;
     setTimeout(function(){
-        console.log("removing");
         message_label.Text = "";
         setPos(message_label, -999, -999);
     }, 3000);
