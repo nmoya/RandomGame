@@ -106,7 +106,7 @@ function socket_functions()
 
         s.on("client_ready", function(){
             if (clients == 1)
-                createGameState(15);
+                createGameState(1);
         })
 
         s.on("update_coords", function(player){
