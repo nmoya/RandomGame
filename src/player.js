@@ -181,8 +181,8 @@ function _Player (id)
                                       y: Player.obj.y,
                                       current_animation: Player.obj.currentAnimation});
         }
-        //if (typeof GameState != "undefined")
-        setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
+        if (typeof GameState != "undefined")
+            setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
             
     };
 }
