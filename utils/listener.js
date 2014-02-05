@@ -56,6 +56,14 @@ function listen()
     socket.on("send_message", function(data){
          placeMessage(data.x, data.y, data.message);
     })
+    
+    socket.on("ping", function(time){
+        socket.emit("ping_receive", time);
+    })
+    
+    socket.on("send_latency", function(latency){
+        latencyLabel.text = latency + " ms";
+    })
 
 }
 

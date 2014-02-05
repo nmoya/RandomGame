@@ -1,5 +1,5 @@
 //Assets
-var fpsLabel     = '';
+
 var background   = null;
 var messageField = null;
 var loading_length = 330;
@@ -97,7 +97,7 @@ function init()
     Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
     //Assets
-    fpsLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#FFFFFF");
+    latencyLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#FFFFFF");
     level_label = new createjs.Text(GameState.level, "20px Arial", "#ffffff");
     setPos(level_label, Canvas.width-100, 10);
     alive_label = new createjs.Text(GameState.aliveEnemies, "16px Arial", "#ffffff");
@@ -107,7 +107,7 @@ function init()
 
     setPos(Player.obj, Canvas.width/2, Canvas.height/2);
     setPos(Player.sign, Canvas.width/2+5, Canvas.height/2+43);
-    setPos(fpsLabel, 10, 20);
+    setPos(latencyLabel, 10, 20);
 
     //Objects added example
     Stage.addChild(Background.obj);
@@ -117,7 +117,7 @@ function init()
     Stage.addChild(level_label);
     Stage.addChild(Player.obj);
     Stage.addChild(Player.crown);
-    Stage.addChild(fpsLabel);
+    Stage.addChild(latencyLabel);
     Stage.addChild(message_label);
 
 
@@ -139,7 +139,7 @@ function init()
 function gameLoop()
 {
     //FPS label
-    fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
+    //latencyLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
     level_label.text = "Level: " + GameState.level;
     alive_label.text = "Alive: " + GameState.aliveEnemies;
     

@@ -1,4 +1,4 @@
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 3000;
 var express = require('express');
 var http = require('http');
 var app = express();
@@ -153,6 +153,14 @@ function socket_functions()
                 GameState.crown_position = setCrownPosition(GameState.Users[GameState.leader]);
             }
         })
+        
+        s.on("ping_receive", function(time){
+            difference = Date.now()-time;
+            s.emit("send_latency", difference);
+        })
+        setInterval(function(){
+            s.emit("ping", Date.now()); 
+        }, 1000);
     
     });
 }

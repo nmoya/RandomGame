@@ -13,6 +13,7 @@ var BLOOD      = [];
 var Image_Path = "./images/";
 var Sound_Path = "./sounds/";
 var last_user_removed = null;
+var latencyLabel = '';
 
 var GameState = {}
 
