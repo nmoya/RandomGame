@@ -148,7 +148,7 @@ function socket_functions()
                     serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "HEPTA KILL", timeout: 750});
                 else if (hit_count == 8)
                     serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "OCTO KILL", timeout: 750});
-                else if (hit_count == 9)
+                else if (hit_count >= 9)
                     serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "MASSACRE!", timeout: 750});
             }
             
