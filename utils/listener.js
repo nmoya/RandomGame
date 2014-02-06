@@ -54,15 +54,15 @@ function listen()
     })
 
     socket.on("send_message", function(data){
-         placeMessage(data.x, data.y, data.message);
+         placeMessage(data.x, data.y, data.message, data.timeout);
     })
     
-    socket.on("ping", function(time){
-        socket.emit("ping_receive", time);
-    })
-    
+    setInterval(function(){
+        socket.emit("ping_receive", GameState.time);
+    }, 1000);
+
     socket.on("send_latency", function(latency){
-        latencyLabel.text = latency + " ms";
+        latencyLabel.text = Math.floor(latency/2) + " ms";
     })
 
 }

@@ -24,10 +24,10 @@ function _Canvas(tag_object) {
     this.tag = tag_object;
     //XX - Resize
     this.context = this.tag.getContext('2d');
-    this.context.canvas.width = window.innerWidth-30;
-    this.context.canvas.height = window.innerHeight-60;
-    this.width = window.innerWidth-30;
-    this.height = window.innerHeight-60;
+    this.context.canvas.width = window.innerWidth;
+    this.context.canvas.height = window.innerHeight;
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
 
     this.tag.addEventListener('mousemove', function(evt) 
     {

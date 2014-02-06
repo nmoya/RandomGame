@@ -28,10 +28,10 @@ function Particle (color, minSize, maxSize)
 function createExplosion(x, y)
 {
     var minSize = 5;
-    var maxSize = 15;
-    var count = 30;
+    var maxSize = 10;
+    var count = 10;
     var minSpeed = 1.0;
-    var maxSpeed = 20.0;
+    var maxSpeed = 5.0;
     var minScaleSpeed = 0.03;
     var maxScaleSpeed = 0.08;
 

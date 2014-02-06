@@ -14,6 +14,7 @@ var socket_list = {};
 var user_array = {};
 var GameState = {
     uid: 0,
+    time: 0,
     config: {},
     leader: false,
     Enemies: {},
@@ -133,6 +134,24 @@ function socket_functions()
                     hit_count+=1;
                 }
             }
+            if (GameState.aliveEnemies > 0)
+            {
+                if (hit_count == 3)
+                    serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "TRIPLE KILL", timeout: 750});
+                else if (hit_count == 4)
+                    serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "QUADRA KILL", timeout: 750});
+                else if (hit_count == 5)
+                    serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "PENTA KILL", timeout: 750});
+                else if (hit_count == 6)
+                    serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "HEXA KILL", timeout: 750});
+                else if (hit_count == 7)
+                    serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "HEPTA KILL", timeout: 750});
+                else if (hit_count == 8)
+                    serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "OCTO KILL", timeout: 750});
+                else if (hit_count == 9)
+                    serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "MASSACRE!", timeout: 750});
+            }
+            
         })
 
         s.on("disconnect", function(){
@@ -158,9 +177,6 @@ function socket_functions()
             difference = Date.now()-time;
             s.emit("send_latency", difference);
         })
-        setInterval(function(){
-            s.emit("ping", Date.now()); 
-        }, 1000);
     
     });
 }
@@ -172,7 +188,7 @@ function createGameState(level){
     GameState.config = CONFIG;
     GameState.config.Player.leader_speed = GameState.config.Player.regular_speed;
 
-    socket_list[GameState.leader].emit("send_message", {x: 0.5, y:0.5, message: "You are the leader!"});
+    socket_list[GameState.leader].emit("send_message", {x: 0.5, y:0.5, message: "You are the leader!", timeout: 3000});
 
     GameState.Enemies = {};
     for (var i=0; i< GameState.aliveEnemies; i++)
@@ -268,13 +284,13 @@ function destroyGameState(){
 function GameOver(callback) {
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
-    serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "GAME OVER! The leader died."});
+    serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "GAME OVER! The leader died.", timeout: 3000});
     createGameState(1);
 }
 function NextLevel(){
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
-    serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "Level Complete"});
+    serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "Level Complete", timeout: 3000});
     createGameState(GameState.level+1);
 }
 function serverloop()
@@ -287,6 +303,7 @@ function serverloop()
         NextLevel();
     
     GameState.uid += 1;
+    GameState.time = Date.now();
     serv_io.sockets.emit('setGameState', GameState);
 }
 function setCrownPosition(user)

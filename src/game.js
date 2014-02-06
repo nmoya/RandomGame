@@ -7,7 +7,6 @@ var loading_rect = null;
 
 var level_label = null;
 var alive_label = null;
-var gameover_label = null;
 var new_game = false;
 var music = false;
 var message_label = null;
@@ -57,19 +56,19 @@ function main(GameState)
     //Creditos
     setTimeout(function(){
         gnotify("Nikolas Moya, programador.", "success");
-    }, 12000);
-    setTimeout(function(){
-        gnotify("Guilherme Mattioli, programador", "success");
-    }, 16000);
-    setTimeout(function(){
-        gnotify("Marilia Ferreira, designer.", "success");
     }, 20000);
     setTimeout(function(){
-        gnotify("Rafael Zilio, designer", "success");
+        gnotify("Guilherme Mattioli, programador", "success");
     }, 24000);
     setTimeout(function(){
-        gnotify("Alex Campos, músico", "success");
+        gnotify("Marilia Ferreira, designer.", "success");
     }, 28000);
+    setTimeout(function(){
+        gnotify("Rafael Zilio, designer", "success");
+    }, 32000);
+    setTimeout(function(){
+        gnotify("Alex Campos, músico", "success");
+    }, 36000);
 
 
     preload = new createjs.LoadQueue();
@@ -113,21 +112,12 @@ function init()
     Stage.addChild(Background.obj);
     Stage.addChild(Player.sign);
     Stage.addChild(Player.weapon);
-    Stage.addChild(alive_label);
+    //Stage.addChild(alive_label);
     Stage.addChild(level_label);
     Stage.addChild(Player.obj);
     Stage.addChild(Player.crown);
     Stage.addChild(latencyLabel);
     Stage.addChild(message_label);
-
-
-    /*setInterval(function(){
-        if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
-            socket.emit("update_coords", {id: Player.id, 
-                                          x: Player.obj.x,
-                                          y: Player.obj.y,
-                                          current_animation: Player.obj.currentAnimation});
-    }, 25);*/
 
     if (!createjs.Ticker.hasEventListener("tick")) { 
         createjs.Ticker.addEventListener("tick", gameLoop);
@@ -177,35 +167,23 @@ function gameLoop()
             EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
         }
     }
+    if (GameState.crown_position)
+        setPos(Player.crown, GameState.crown_position.x, GameState.crown_position.y);
 
+    for (var i in particles)
+        particles[i].update();
+    
     Player.update();
     Stage.update();
 }
 
-function placeMessage(x, y, message){
+function placeMessage(x, y, message, timeout){
     setPos(message_label, x*Canvas.width, y*Canvas.height);
     message_label.text = message;
     setTimeout(function(){
         message_label.Text = "";
         setPos(message_label, -999, -999);
-    }, 3000);
+    }, timeout);
     
 }
-//CHECK
-function gameOver()
-{
-    //Stage.removeAllChildren();
-    //Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
-    gameover_label = new createjs.Text("GAME OVER", "20px Arial", "#ffffff");
-    setPos(gameover_label, Canvas.width/2, Canvas.height/2);
-    Stage.addChild(gameover_label);
 
-
-    Stage.removeAllChildren();
-    UserList = {};
-    EnemiesList = [];
-    socket.emit("game_over", User);
-    gnotify("GAME OVER", "error");
-    init();
-
-}

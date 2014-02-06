@@ -153,6 +153,7 @@ function _Player (id)
         }
         if (Key.isDown(Key.SPACE) && !lastHit)
         {   lastHit = true;
+            createExplosion(this.obj.x, this.obj.y);
             setTimeout(function ()
             {   lastHit = false;
             }, hitDelay);
@@ -187,9 +188,6 @@ function _Player (id)
                                       x: Player.obj.x,
                                       y: Player.obj.y,
                                       current_animation: Player.obj.currentAnimation});
-        }
-        if (typeof GameState != "undefined")
-            setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
-            
+        }            
     };
 }
