@@ -136,7 +136,9 @@ function socket_functions()
             }
             if (GameState.aliveEnemies > 0)
             {
-                if (hit_count == 3)
+                if (hit_count == 2)
+                    serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "DOUBLE KILL", timeout: 750});
+                else if (hit_count == 3)
                     serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "TRIPLE KILL", timeout: 750});
                 else if (hit_count == 4)
                     serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "QUADRA KILL", timeout: 750});
