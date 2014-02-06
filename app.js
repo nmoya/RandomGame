@@ -184,7 +184,7 @@ function createGameState(level){
     GameState.uid = 1;
     GameState.leader = elect_leader();
     GameState.level = level;
-    GameState.aliveEnemies = Math.floor((2 * Math.pow(GameState.level, 1.5)) + 5);
+    GameState.aliveEnemies = Math.floor((2 * Math.pow((GameState.level+2), 1.5)) + 5);
     GameState.config = CONFIG;
     GameState.config.Player.leader_speed = GameState.config.Player.regular_speed;
 
