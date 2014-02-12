@@ -1,7 +1,7 @@
 function Particle (color, minSize, maxSize)
 {
     this.shape = new createjs.Shape();
-    this.shape.graphics.beginFill(color).drawCircle(0, 0, randomFloat(minSize, maxSize));
+    this.shape.graphics.beginFill(color).drawCircle(0, 0, common.randomFloat(minSize, maxSize));
     this.velocityX = 0;
     this.velocityY = 0;
     this.scaleSpeed = 0.1;
@@ -37,7 +37,7 @@ function createExplosion(x, y)
 
     for (var angle=0; angle<360; angle += Math.round(360/count))
     {
-        if (randomInt(0, 1) == 0)
+        if (common.randomInt(0, 1) == 0)
             var particle = new Particle("orange", minSize, maxSize);
         else
             var particle = new Particle("black", minSize, maxSize);
@@ -45,8 +45,8 @@ function createExplosion(x, y)
         particle.shape.x = x;
         particle.shape.y = y;
 
-        particle.scaleSpeed = randomFloat(minScaleSpeed, maxScaleSpeed);
-        var speed = randomFloat(minSpeed, maxSpeed);
+        particle.scaleSpeed = common.randomFloat(minScaleSpeed, maxScaleSpeed);
+        var speed = common.randomFloat(minSpeed, maxSpeed);
 
         particle.velocityX = speed * Math.cos(angle * Math.PI / 180.0);
         particle.velocityY = speed * Math.sin(angle * Math.PI / 180.0);

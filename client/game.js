@@ -79,7 +79,7 @@ function updateLoading()
 function init()
 {
     Stage.removeAllChildren();
-    socket.emit("client_ready");
+    //socket.emit("client_ready");
     if (music == false)
     {
         //createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);    
@@ -90,15 +90,15 @@ function init()
     //Assets
     latencyLabel    = new createjs.Text("-- fps", "bold 12px Arial", "#FFFFFF");
     level_label = new createjs.Text(GameState.level, "20px Arial", "#ffffff");
-    setPos(level_label, Canvas.width-100, 10);
+    common.setPos(level_label, Canvas.width-100, 10);
     alive_label = new createjs.Text(GameState.aliveEnemies, "16px Arial", "#ffffff");
-    setPos(alive_label, Canvas.width-100, 50);
+    common.setPos(alive_label, Canvas.width-100, 50);
     message_label = new createjs.Text("", "48px Arial", "#ffffff");
     message_label.textAlign = "center";
 
-    setPos(Player.obj, Canvas.width/2, Canvas.height/2);
-    setPos(Player.sign, Canvas.width/2+5, Canvas.height/2+43);
-    setPos(latencyLabel, 10, 20);
+    common.setPos(Player.obj, Canvas.width/2, Canvas.height/2);
+    common.setPos(Player.sign, Canvas.width/2+5, Canvas.height/2+43);
+    common.setPos(latencyLabel, 10, 20);
 
     //Objects added example
     Stage.addChild(Background.obj);
@@ -124,7 +124,6 @@ function gameLoop()
 {
     if (GameState.uid != 0)
     {
-        console.log(GameState.crown_position);
         //FPS label
         //latencyLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
         level_label.text = "Level: " + GameState.level;
@@ -140,7 +139,7 @@ function gameLoop()
                     UserList[key] = new _Player(0);
                     Stage.addChild(UserList[key].obj);
                 }
-                setPos(UserList[key].obj, temp_user.x, temp_user.y);
+                common.setPos(UserList[key].obj, temp_user.x, temp_user.y);
                 if (UserList[key].obj.currentAnimation != temp_user.current_animation)
                     UserList[key].obj.gotoAndPlay(temp_user.current_animation);
             }
@@ -160,7 +159,7 @@ function gameLoop()
             {
                 if (!Stage.contains(EnemiesList[key].obj))
                     Stage.addChild(EnemiesList[key].obj);
-                setPos(EnemiesList[key].obj, enemy.x, enemy.y);
+                common.setPos(EnemiesList[key].obj, enemy.x, enemy.y);
                 EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
             }
         }
@@ -173,11 +172,11 @@ function gameLoop()
 }
 
 function placeMessage(x, y, message, timeout){
-    setPos(message_label, x*Canvas.width, y*Canvas.height);
+    common.setPos(message_label, x*Canvas.width, y*Canvas.height);
     message_label.text = message;
     setTimeout(function(){
         message_label.Text = "";
-        setPos(message_label, -999, -999);
+        common.setPos(message_label, -999, -999);
     }, timeout);
     
 }

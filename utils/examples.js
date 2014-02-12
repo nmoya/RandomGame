@@ -7,7 +7,7 @@ circle.cache(-40, -40, 40*2, 40*2);
 
 
 //Check for explosion
-if (distance(Player.obj, user_key) < 5)
+if (common.euclidean_distance(Player.obj, user_key) < 5)
     createExplosion(Player.obj.x, Player.obj.y);
 
 

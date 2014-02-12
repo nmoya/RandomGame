@@ -93,7 +93,7 @@ function _Player (id)
     var spriteSheet = new createjs.SpriteSheet(data);
     this.weapon = new createjs.Sprite(spriteSheet);
     this.weapon.addEventListener("animationend", function(){
-        setPos(Player.weapon, -100, -100);
+        common.setPos(Player.weapon, -100, -100);
     })
 
     this.isLeader = function(){
@@ -111,31 +111,31 @@ function _Player (id)
                 speed = GameState.config.Player.regular_speed;
         }
         if (outOfCanvas(this.obj))
-            setPos(this.obj, randomInt(0, Canvas.width), randomInt(0, Canvas.height));
+            common.setPos(this.obj, common.randomInt(0, Canvas.width), common.randomInt(0, Canvas.height));
 
         if (Key.isDown(Key.UP))
         {
             if (this.obj.currentAnimation != "up")
                 this.obj.gotoAndPlay("up");
-            setPos(this.obj, this.obj.x, this.obj.y-speed);
+            common.setPos(this.obj, this.obj.x, this.obj.y-speed);
         }
         if (Key.isDown(Key.LEFT))
         {
             if (this.obj.currentAnimation != "left")
                 this.obj.gotoAndPlay("left");
-            setPos(this.obj, this.obj.x-speed, this.obj.y);
+            common.setPos(this.obj, this.obj.x-speed, this.obj.y);
         }
         if (Key.isDown(Key.DOWN))
         {
             if (this.obj.currentAnimation != "down")
                 this.obj.gotoAndPlay("down");
-            setPos(this.obj, this.obj.x, this.obj.y+speed);
+            common.setPos(this.obj, this.obj.x, this.obj.y+speed);
         }
         if (Key.isDown(Key.RIGHT))
         {
             if (this.obj.currentAnimation != "right")
                 this.obj.gotoAndPlay("right");
-            setPos(this.obj, this.obj.x+speed, this.obj.y);
+            common.setPos(this.obj, this.obj.x+speed, this.obj.y);
         }
         if (Key.isDown(Key.SPACE) && !lastHit)
         {   lastHit = true;
@@ -146,19 +146,19 @@ function _Player (id)
             var curr = this.obj.currentAnimation;
             var offset = {x: 20, y: 30}; //px
             if (curr == "up")
-            {   setPos(this.weapon, this.obj.x, this.obj.y - offset.x);
+            {   common.setPos(this.weapon, this.obj.x, this.obj.y - offset.x);
                 this.weapon.gotoAndPlay("up");
             }
             else if (curr == "down")
-            {   setPos(this.weapon, this.obj.x, this.obj.y + offset.y);
+            {   common.setPos(this.weapon, this.obj.x, this.obj.y + offset.y);
                 this.weapon.gotoAndPlay("down");
             }
             else if (curr == "left")
-            {   setPos(this.weapon, this.obj.x - offset.x, this.obj.y+10);
+            {   common.setPos(this.weapon, this.obj.x - offset.x, this.obj.y+10);
                 this.weapon.gotoAndPlay("left");
             }
             else if (curr == "right")
-            {   setPos(this.weapon, this.obj.x + offset.x, this.obj.y+10); 
+            {   common.setPos(this.weapon, this.obj.x + offset.x, this.obj.y+10); 
                 this.weapon.gotoAndPlay("right");
             }
 
@@ -169,7 +169,7 @@ function _Player (id)
 
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
         {
-            setPos(this.sign, this.obj.x+5, this.obj.y+43);
+            common.setPos(this.sign, this.obj.x+5, this.obj.y+43);
             socket.emit("update_coords", {id: Player.id, 
                                       x: Player.obj.x,
                                       y: Player.obj.y,

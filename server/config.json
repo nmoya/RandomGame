@@ -2,7 +2,8 @@
     "Player": {
         "leader_speed": 8,
         "regular_speed": 8,
-        "attack": 100
+        "attack": 100,
+        "start_pos": [0, 0]
     },
     "Enemy": {
         "min_speed": 3,
@@ -13,8 +14,7 @@
     "Game": {
         "max_fps": 20,
         "start_level": 1,
-        "crown_offset": [10, -30],
-        "spawn_position": {
+        "spawn_pos": {
             "0x": [1920, 3840],
             "0y": [0, 1080],
 
@@ -26,6 +26,12 @@
 
             "3x": [0, 1920],
             "3y": [1080, 2160]
+        }
+    },
+    "Items": {
+        "crown": {
+            "start_pos": [0, 0],
+            "offset": [10, -30]
         }
     }
 }

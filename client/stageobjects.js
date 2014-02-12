@@ -53,7 +53,7 @@ function _StageObjects()
     this.update = function(GameState)
     {
         var i =0;
-        setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
+        common.setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
 
         for (i=0; i < this.particlesList.length; i++)
             this.particlesList[i].update();
@@ -76,7 +76,7 @@ function _StageObjects()
         spriteSheet = new createjs.SpriteSheet(data);
         var b = new createjs.Sprite(spriteSheet, "start");
         this.bloodList.push(b);
-        setPos(b, pos.x, pos.y);
+        common.setPos(b, pos.x, pos.y);
         Stage.addChildAt(b, 1);
     }
     this.cleanBloodList = function()
