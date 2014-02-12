@@ -189,9 +189,8 @@ function createGameState(level){
     GameState.level = level;
     GameState.aliveEnemies = Math.floor((2 * Math.pow((GameState.level+2), 1.5)) + 5);
     GameState.config = CONFIG;
+    GameState.crown_position = {x: 0, y: 0};
     GameState.config.Player.leader_speed = GameState.config.Player.regular_speed;
-
-    socket_list[GameState.leader].emit("send_message", {x: 0.5, y:0.5, message: "You are the leader!", timeout: 3000});
 
     GameState.Enemies = {};
     for (var i=0; i< GameState.aliveEnemies; i++)
@@ -226,7 +225,7 @@ function createGameState(level){
                                randomInt(GameState.config.Enemy.min_speed, GameState.config.Enemy.max_speed),
                                 'user_enemy', "idle");
     }
-    GameState.crown_position = {x: 0, y: 0};
+    socket_list[GameState.leader].emit("send_message", {x: 0.5, y:0.5, message: "You are the leader!", timeout: 3000});
     serverinterval = setInterval(serverloop, 1000/GameState.config.Game.max_fps);
 }
 function ServerEnemy(x, y, life, speed, type, current_animation)
@@ -283,6 +282,7 @@ function destroyGameState(){
     GameState.Users = {};
     GameState.config = CONFIG;
     GameState.Enemies = {};
+    GameState.crown_position = {x: 0, y:0};
 }
 function GameOver(callback) {
     clearInterval(serverinterval);
