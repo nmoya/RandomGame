@@ -1,4 +1,4 @@
-function _Player (id)
+function _Player (id, name)
 {   var hitDelay = 1000;
     var lastHit = false;
     var data = null;
@@ -48,6 +48,7 @@ function _Player (id)
     this.obj = new createjs.Sprite(spriteSheet, "idle_front");
     this.speed = 8;
     this.id = id;
+    this.name = name;
 
     //Load the sign
     data = {

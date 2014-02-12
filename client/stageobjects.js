@@ -2,6 +2,7 @@ function _StageObjects()
 {   
     this.bloodList      = [];
     this.particlesList  = [];
+    this.namesList      = {};
     /*var data =
     {   images: [Image_Path+"crown.png"],
         frames: {width:42, height:48},
@@ -57,6 +58,7 @@ function _StageObjects()
 
         for (i=0; i < this.particlesList.length; i++)
             this.particlesList[i].update();
+
             
     }
     this.addBlood = function(pos)
@@ -84,5 +86,19 @@ function _StageObjects()
         for (var b in this.bloodList)
             Stage.removeChild(this.bloodList[b]);
         this.bloodList = [];
+    }
+    this.addName = function(name){
+        console.log("Adding the name");
+        n = new createjs.Text(name.text, "12px Arial", "#ffffff");
+        n.textAlign = "center";
+        this.namesList[name.text] = n;
+        Stage.addChild(n);
+    }
+    this.removeName = function(name){
+        Stage.removeChild(this.namesList[name.text]);
+        delete this.namesList[name.text];
+    }
+    this.updateName = function(name){
+        common.setPos(this.namesList[name.text], name.x, name.y);
     }
 }

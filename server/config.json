@@ -32,6 +32,9 @@
         "crown": {
             "start_pos": [0, 0],
             "offset": [10, -30]
+        },
+        "names": {
+            "offset": [20, 57]
         }
     }
 }

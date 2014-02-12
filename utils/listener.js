@@ -15,12 +15,15 @@ function listen()
     });
 
     socket.on("connect", function(){
-        Player = new _Player(socket.socket.sessionid);
+        Player = new _Player(socket.socket.sessionid, null);
     });
 
     //Set the game state to only one user.
     socket.on("setGameState", function (gs) {
         GameState = gs;
+        if (Player.name === null)
+            StageObjects.addName(GameState.Users[Player.id].name);
+        Player.name = GameState.Users[Player.id].name;
         delete GameState.Users[Player.id];
     });
 
@@ -29,6 +32,7 @@ function listen()
         {
             Stage.removeChild(UserList[user_id].obj);
             last_user_removed = user_id;
+            StageObjects.removeName(UserList[user_id].name);
             delete UserList[user_id];
         }
     });

@@ -7,6 +7,7 @@ var fs = require("fs");
 //
 ////////////////////////////////
 var CONFIG = {};
+var NAMES = [];
 var GameState = {
     uid: 0,
     time: 0,
@@ -37,9 +38,20 @@ module.exports = {
             }
            CONFIG = JSON.parse(data);
         });
+        fs.readFile("./server/names.json", 'utf8', function (err, data) {
+            if (err) {
+                console.log('Error: ' + err);
+                return;
+            }
+           NAMES = JSON.parse(data);
+        });
     },
     createUser: function(socket_id, socket) {
-        GameState.Users[socket_id] = {x: CONFIG.Player.start_pos[0], y: CONFIG.Player.start_pos[1], current_animation: "idle"};
+        GameState.Users[socket_id] = {x: CONFIG.Player.start_pos[0],
+                                      y: CONFIG.Player.start_pos[1],
+                                      current_animation: "idle",
+                                      name: {text: randomName(), x: 0, y: 0}};
+        socket.emit("receiveName", GameState.Users[socket_id].name);
         socket_list[socket_id] = socket;
     },
     destroyUser: function(socket_id){
@@ -58,6 +70,8 @@ module.exports = {
             GameState.Users[socket_id].x = user.x;
             GameState.Users[socket_id].y = user.y;
             GameState.Users[socket_id].current_animation = user.current_animation;
+            GameState.Users[socket_id].name.x = user.x + CONFIG.Items.names.offset[0];
+            GameState.Users[socket_id].name.y = user.y + CONFIG.Items.names.offset[1];
 
             if (socket_id == GameState.leader)
                 GameState.crown_position = setCrownPosition(user);
@@ -166,11 +180,15 @@ function leader_election()
         user_list.push(k);
     return user_list[common.randomInt(0, user_list.length-1)];
 }
+function randomName(){
+    return NAMES[common.randomInt(0, NAMES.length-1)];
+}
 function getLeader() {return GameState.Users[GameState.leader];}
     
 
 function computeAliveEnemies(x) {return Math.floor((2 * Math.pow((GameState.level+2), 1.5)) + 5);}
     
+
 
 function setCrownPosition(user)
 {

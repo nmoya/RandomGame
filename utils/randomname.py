@@ -1,11 +1,13 @@
 import urllib2
 import urllib
 import time
+import json
 
 #http://www.behindthename.com/random/
 
-NUMBER_OF_NAMES = 100
-TIMEOUT = 0.01
+NUMBER_OF_NAMES = 1000
+TIMEOUT = 0.001
+NAMES_LIST = []
 
 
 def main():
@@ -13,11 +15,17 @@ def main():
     r.updateInternetState()
     if r.internetAvailable:
         for i in range(NUMBER_OF_NAMES):
-            html = r.getHTMLFromLink("http://www.behindthename.com/random/random.php?number=1&gender=both&surname=&all=no&usage_grem=1&usage_grea=1&usage_roma=1&usage_hist=1")
-            html = html[html.find("plain"):]
-            name = html[html.find(">")+1:html.find("<")]
+            name = "&"
+            while "&" in name or ";" in name and name not in NAMES_LIST:
+                html = r.getHTMLFromLink("http://www.behindthename.com/random/random.php?number=1&gender=both&surname=&all=no&usage_myth=1&usage_grem=1&usage_romm=1&usage_grea=1&usage_roma=1&usage_hist=1&usage_lite=1")
+                html = html[html.find("plain"):]
+                name = html[html.find(">")+1:html.find("<")]
             print name
-            time.sleep(TIMEOUT)
+            NAMES_LIST.append(name)
+            #time.sleep(TIMEOUT)
+        arq = open("../server/names.json", "w")
+        arq.write(json.dumps(NAMES_LIST))
+        arq.close()
 
 
 

@@ -136,10 +136,12 @@ function gameLoop()
             {
                 var temp_user = GameState.Users[key];
                 if (typeof UserList[key] == 'undefined') {
-                    UserList[key] = new _Player(0);
+                    UserList[key] = new _Player(0, GameState.Users[key].name);
                     Stage.addChild(UserList[key].obj);
+                    StageObjects.addName(GameState.Users[key].name);
                 }
                 common.setPos(UserList[key].obj, temp_user.x, temp_user.y);
+                StageObjects.updateName(GameState.Users[key].name);
                 if (UserList[key].obj.currentAnimation != temp_user.current_animation)
                     UserList[key].obj.gotoAndPlay(temp_user.current_animation);
             }
@@ -165,6 +167,7 @@ function gameLoop()
         }
         //if (GameState.crown_position)
         StageObjects.update(GameState);
+        StageObjects.updateName(Player.name);
         
         Player.update();
         Stage.update();
