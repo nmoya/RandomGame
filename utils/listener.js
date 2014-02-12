@@ -25,7 +25,7 @@ function listen()
     });
 
     socket.on("user_disconnected", function (user_id) {
-        if (typeof UserList[user_id].obj != "undefined")
+        if (typeof UserList[user_id] != "undefined")
         {
             Stage.removeChild(UserList[user_id].obj);
             last_user_removed = user_id;

@@ -88,7 +88,7 @@ function init()
     var Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
     //Assets
-    latencyLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#FFFFFF");
+    latencyLabel    = new createjs.Text("-- fps", "bold 12px Arial", "#FFFFFF");
     level_label = new createjs.Text(GameState.level, "20px Arial", "#ffffff");
     setPos(level_label, Canvas.width-100, 10);
     alive_label = new createjs.Text(GameState.aliveEnemies, "16px Arial", "#ffffff");
@@ -122,50 +122,54 @@ function init()
 
 function gameLoop()
 {
-    //FPS label
-    //latencyLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
-    level_label.text = "Level: " + GameState.level;
-    alive_label.text = "Alive: " + GameState.aliveEnemies;
-    
-    //Update users' positions
-    for(var key in GameState.Users)
+    if (GameState.uid != 0)
     {
-        if (key != last_user_removed)
+        console.log(GameState.crown_position);
+        //FPS label
+        //latencyLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
+        level_label.text = "Level: " + GameState.level;
+        alive_label.text = "Alive: " + GameState.aliveEnemies;
+        
+        //Update users' positions
+        for(var key in GameState.Users)
         {
-            var temp_user = GameState.Users[key];
-            if (typeof UserList[key] == 'undefined') {
-                UserList[key] = new _Player(0);
-                Stage.addChild(UserList[key].obj);
+            if (key != last_user_removed)
+            {
+                var temp_user = GameState.Users[key];
+                if (typeof UserList[key] == 'undefined') {
+                    UserList[key] = new _Player(0);
+                    Stage.addChild(UserList[key].obj);
+                }
+                setPos(UserList[key].obj, temp_user.x, temp_user.y);
+                if (UserList[key].obj.currentAnimation != temp_user.current_animation)
+                    UserList[key].obj.gotoAndPlay(temp_user.current_animation);
             }
-            setPos(UserList[key].obj, temp_user.x, temp_user.y);
-            if (UserList[key].obj.currentAnimation != temp_user.current_animation)
-                UserList[key].obj.gotoAndPlay(temp_user.current_animation);
         }
-    }
-    //Update enemies' positions
-    for(var key in GameState.Enemies)
-    {
-        var enemy = GameState.Enemies[key];
-        if (typeof EnemiesList[key] == 'undefined') 
+        //Update enemies' positions
+        for(var key in GameState.Enemies)
         {
-            EnemiesList[key] = new _Enemy(enemy.speed);
-            Stage.addChild(EnemiesList[key].obj);
-        }
-        if (enemy.life <= 0)
-            Stage.removeChild(EnemiesList[key].obj);
-        else
-        {
-            if (!Stage.contains(EnemiesList[key].obj))
+            var enemy = GameState.Enemies[key];
+            if (typeof EnemiesList[key] == 'undefined') 
+            {
+                EnemiesList[key] = new _Enemy(enemy.speed);
                 Stage.addChild(EnemiesList[key].obj);
-            setPos(EnemiesList[key].obj, enemy.x, enemy.y);
-            EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
+            }
+            if (enemy.life <= 0)
+                Stage.removeChild(EnemiesList[key].obj);
+            else
+            {
+                if (!Stage.contains(EnemiesList[key].obj))
+                    Stage.addChild(EnemiesList[key].obj);
+                setPos(EnemiesList[key].obj, enemy.x, enemy.y);
+                EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
+            }
         }
-    }
-    if (GameState.crown_position)
+        //if (GameState.crown_position)
         StageObjects.update(GameState);
-    
-    Player.update();
-    Stage.update();
+        
+        Player.update();
+        Stage.update();
+    }
 }
 
 function placeMessage(x, y, message, timeout){
