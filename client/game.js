@@ -161,8 +161,8 @@ function gameLoop()
             EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
         }
     }
-    //if (GameState.crown_position)
-    StageObjects.update(GameState);
+    if (GameState.crown_position)
+        StageObjects.update(GameState);
     
     Player.update();
     Stage.update();
