@@ -25,9 +25,12 @@ function listen()
     });
 
     socket.on("user_disconnected", function (user_id) {
-        Stage.removeChild(UserList[user_id].obj);
-        last_user_removed = user_id;
-        delete UserList[user_id];
+        if (UserList[user_id].obj)
+        {
+            Stage.removeChild(UserList[user_id].obj);
+            last_user_removed = user_id;
+            delete UserList[user_id];
+        }
     });
 
     socket.on("reset", function()
