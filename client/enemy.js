@@ -1,5 +1,6 @@
 function _Enemy(speed)
-{	var data =
+{	
+    var data =
 	{	images: [Image_Path+"user.png"],
 		frames: {width:42, height:48},
 		animations: {
@@ -28,6 +29,4 @@ function _Enemy(speed)
 	var spriteSheet = new createjs.SpriteSheet(data);
 	this.obj = new createjs.Sprite(spriteSheet);
 	this.speed = speed;
-	this.radiusToCollide = 10;
-
 }

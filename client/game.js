@@ -23,7 +23,7 @@ function main(GameState)
     Canvas      = new _Canvas($("#mainCanvas")[0]);
     Mouse       = new _Mouse();
     Stage       = new createjs.Stage("mainCanvas");
-    Background  = new _Background(Image_Path+"loading.jpg", 1806, 1148);    
+    var Background  = new _Background(Image_Path+"loading.jpg", 1806, 1148);    
 
     window.addEventListener('keyup', function(event) { Key.onKeyup(event); }, false);
     window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
@@ -44,14 +44,6 @@ function main(GameState)
         {id:"collision", src:Sound_Path+"hit.wav"},
         {id:"bg_music", src:Sound_Path+"tgt.mp3"},
     ];
-
-    //Tutorial
-    setTimeout(function(){
-        snotify(0.15, 0.25, "You MUST protect the leader", "info");
-    }, 1000);
-    setTimeout(function(){
-        snotify(0.5, 0.7, "Use the ARROW keys to move around and SPACE to attack!", "info");
-    }, 5000);
 
     //Creditos
     setTimeout(function(){
@@ -93,7 +85,7 @@ function init()
         //createjs.Sound.play("bg_music", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);    
         music = true;
     }
-    Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
+    var Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
 
     //Assets
     latencyLabel    = new createjs.Text("-- fps", "bold 18px Arial", "#FFFFFF");
@@ -115,9 +107,11 @@ function init()
     //Stage.addChild(alive_label);
     Stage.addChild(level_label);
     Stage.addChild(Player.obj);
-    Stage.addChild(Player.crown);
     Stage.addChild(latencyLabel);
     Stage.addChild(message_label);
+
+    //This needs to be here for the sprites to overlap the background and players
+    StageObjects = new _StageObjects();
 
     if (!createjs.Ticker.hasEventListener("tick")) { 
         createjs.Ticker.addEventListener("tick", gameLoop);
@@ -167,11 +161,8 @@ function gameLoop()
             EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
         }
     }
-    if (GameState.crown_position)
-        setPos(Player.crown, GameState.crown_position.x, GameState.crown_position.y);
-
-    for (var i in particles)
-        particles[i].update();
+    //if (GameState.crown_position)
+    StageObjects.update(GameState);
     
     Player.update();
     Stage.update();

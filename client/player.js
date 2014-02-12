@@ -96,20 +96,6 @@ function _Player (id)
         setPos(Player.weapon, -100, -100);
     })
 
-
-    data = {
-        images: [Image_Path+"crown.png"],
-        frames: {width:30, height:40},
-        animations: {
-             idle: {
-                frames: [0],
-                next: true,
-                speed: 1
-             }
-         }
-     };
-    var spriteSheet = new createjs.SpriteSheet(data);
-    this.crown = new createjs.Sprite(spriteSheet);
     this.isLeader = function(){
         return this.id == GameState.leader;
     }

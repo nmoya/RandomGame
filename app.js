@@ -101,7 +101,7 @@ function socket_functions()
         serv_io.sockets.emit("online", {online: clients});
         socket_list[s.id] = s;
         console.log("Online: " + clients);
-        http.get('http://nikolasmoya.com/ws/wsGameNotify', function(){console.log("Email sent");});
+        //http.get('http://nikolasmoya.com/ws/wsGameNotify', function(){console.log("Email sent");});
         
         //If the client is alone, a new game needs to be created
         GameState.Users[s.id] = {x: 0, y: 0, current_animation: "idle"};

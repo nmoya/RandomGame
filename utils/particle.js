@@ -52,6 +52,6 @@ function createExplosion(x, y)
         particle.velocityY = speed * Math.sin(angle * Math.PI / 180.0);
 
         Stage.addChild(particle.shape);
-        particles.push(particle);
+        StageObjects.particlesList.push(particle);
     }
 }

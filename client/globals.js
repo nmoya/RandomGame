@@ -2,14 +2,12 @@
 var Canvas      = null;
 var Mouse       = null;
 var Stage       = null;
-var Background  = null;
 var EnemiesList = {};
+var UserList    = {};
 var Player      = null;
-var UserList = {}
+var StageObjects = null;
 
 
-var particles  = [];
-var BLOOD      = [];
 var Image_Path = "./images/";
 var Sound_Path = "./sounds/";
 var last_user_removed = null;
@@ -41,24 +39,6 @@ function _Background(srcpath, width, height)
 {
     this.obj = new createjs.Bitmap(srcpath);
     this.obj.setTransform(x=0, y=0, scaleX=Canvas.width/width, scaleY=Canvas.height/height);
-}
-function _Blood()
-{
-    data = {
-            images: [Image_Path+"blood.png"],
-            frames: {width:60, height:60},
-            animations: {
-                 start: 
-                 {
-                    frames: [0, 1, 2, 3],
-                    next: false,
-                    speed: 0.5
-                }
-            }
-        };
-    var spriteSheet = new createjs.SpriteSheet(data);
-    this.obj = new createjs.Sprite(spriteSheet, "start");
-    this.index = 1;
 }
 
 function randomFloat(min, max)
