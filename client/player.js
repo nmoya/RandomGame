@@ -93,6 +93,8 @@ function _Player (id, name)
      };
     var spriteSheet = new createjs.SpriteSheet(data);
     this.weapon = new createjs.Sprite(spriteSheet);
+
+    common.setPos(this.weapon, -100, -100); //This prevent the keyboard appering on the screen
     this.weapon.addEventListener("animationend", function(){
         common.setPos(Player.weapon, -100, -100);
     })

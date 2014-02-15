@@ -3,7 +3,7 @@
         "leader_speed": 8,
         "regular_speed": 8,
         "attack": 100,
-        "start_pos": [0, 0]
+        "start_pos": [700, 500]
     },
     "Enemy": {
         "min_speed": 3,
@@ -30,7 +30,7 @@
     },
     "Items": {
         "crown": {
-            "start_pos": [0, 0],
+            "start_pos": [-90, -90],
             "offset": [10, -30]
         },
         "names": {

@@ -21,11 +21,18 @@ function listen()
     //Set the game state to only one user.
     socket.on("setGameState", function (gs) {
         GameState = gs;
+        /*
+        *Time it took for the mesage that was sent from the server to get here.
+        *Considering that you sent an action, there is the time of this action message
+        *plus the server response. Assuming the same time, I multiply latency by 2.
+        */
         latency = Date.now() - GameState.time;
-        latencyLabel.text = Math.floor(latency) + " ms";
+        latencyLabel.text = Math.floor(latency*2) + " ms";  
         
         if (Player.name === null)
-            StageObjects.addName(GameState.Users[Player.id].name);
+            if (StageObjects)
+                StageObjects.addName(GameState.Users[Player.id].name);
+            
         Player.name = GameState.Users[Player.id].name;
         delete GameState.Users[Player.id];
     });
@@ -45,7 +52,8 @@ function listen()
         $(".text-history").stop();
         $(".text-history").show();
         setTimeout(function(){
-            $(".text-history").hide(1000);
+            if (!Text_input)
+                $(".text-history").hide(1000);
         }, 2000);
     });
 
@@ -72,14 +80,6 @@ function listen()
          placeMessage(data.x, data.y, data.message, data.timeout);
     })
     
-    /*setInterval(function(){
-        socket.emit("ping_receive", GameState.time);
-    }, 1000);
-
-    socket.on("send_latency", function(latency){
-        
-    })*/
-
 }
 
 

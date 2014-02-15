@@ -45,11 +45,12 @@ function _StageObjects()
     var spriteSheet = new createjs.SpriteSheet(data);
     this.crown = new createjs.Sprite(spriteSheet);
 
+    
 
-
-    //Adding the objects
-    Stage.addChild(this.crown);
-
+    this.loadStage = function(){
+        //Adding the objects
+        Stage.addChild(this.crown);    
+    }
 
     this.update = function(GameState)
     {
@@ -58,8 +59,6 @@ function _StageObjects()
 
         for (i=0; i < this.particlesList.length; i++)
             this.particlesList[i].update();
-
-            
     }
     this.addBlood = function(pos)
     {

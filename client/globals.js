@@ -14,7 +14,6 @@ var Sound_Path        = "./assets/sounds/";
 var last_user_removed = null;
 var latencyLabel      = '';
 
-
 //Mouse constructor
 function _Mouse() {this.x=0; this.y=0;}
 function _Canvas(tag_object) {

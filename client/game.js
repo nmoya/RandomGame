@@ -42,8 +42,8 @@ function main(GameState)
         {id:"keyboard.png", src:Image_Path+"keyboard.png"},
         {id:"blood.png", src:Image_Path+"blood.png"},
         {id:"programmer.png", src:Image_Path+"programmer.png"},
-        {id:"collision", src:Sound_Path+"hit.wav"},
-        {id:"bg_music", src:Sound_Path+"tgt.mp3"},
+        //{id:"collision", src:Sound_Path+"hit.wav"},
+        //{id:"bg_music", src:Sound_Path+"tgt.mp3"},
     ];
 
     //Creditos
@@ -79,6 +79,7 @@ function updateLoading()
 
 function init()
 {
+    StageObjects = new _StageObjects();
     Stage.removeAllChildren();
     //socket.emit("client_ready");
     if (music == false)
@@ -111,8 +112,9 @@ function init()
     Stage.addChild(latencyLabel);
     Stage.addChild(message_label);
 
+    StageObjects.loadStage();
+
     //This needs to be here for the sprites to overlap the background and players
-    StageObjects = new _StageObjects();
 
     if (!createjs.Ticker.hasEventListener("tick")) { 
         createjs.Ticker.addEventListener("tick", gameLoop);
@@ -177,12 +179,14 @@ function gameLoop()
 }
 
 function placeMessage(x, y, message, timeout){
-    common.setPos(message_label, x*Canvas.width, y*Canvas.height);
-    message_label.text = message;
-    setTimeout(function(){
-        message_label.Text = "";
-        common.setPos(message_label, -999, -999);
-    }, timeout);
-    
+    if (message_label)
+    {
+        common.setPos(message_label, x*Canvas.width, y*Canvas.height);
+        message_label.text = message;
+        setTimeout(function(){
+            message_label.Text = "";
+            common.setPos(message_label, -999, -999);
+        }, timeout);
+    }
 }
 
