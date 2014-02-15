@@ -30,9 +30,8 @@ function listen()
         latencyLabel.text = Math.floor(latency*2) + " ms";  
         
         if (Player.name === null)
-            if (StageObjects)
-                StageObjects.addName(GameState.Users[Player.id].name);
-            
+            StageObjects.addName(GameState.Users[Player.id].name);
+
         Player.name = GameState.Users[Player.id].name;
         delete GameState.Users[Player.id];
     });

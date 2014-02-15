@@ -32,7 +32,7 @@ function main(GameState)
     loading_rect = new createjs.Shape();
     loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2)+50, Canvas.height*0.77, 10, 35);
     Stage.addChild(Background.obj);
-    Stage.addChild(loading_rect);
+    //Stage.addChild(loading_rect);
     Stage.update();
 
     var manifest = [
@@ -73,12 +73,13 @@ function main(GameState)
 }
 function updateLoading()
 {
-    loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2)+50, Canvas.height*0.77, loading_length*(preload.progress*100|0)/100, 35);
-    Stage.update();
+    //loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2)+50, Canvas.height*0.77, loading_length*(preload.progress*100|0)/100, 35);
+    //Stage.update();
 }
 
 function init()
 {
+    document.getElementsByClassName("la-anim-10")[0].classList.remove("la-animate");
     StageObjects = new _StageObjects();
     Stage.removeAllChildren();
     //socket.emit("client_ready");
