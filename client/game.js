@@ -74,7 +74,7 @@ function main(GameState)
 function updateLoading()
 {
     //loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2)+50, Canvas.height*0.77, loading_length*(preload.progress*100|0)/100, 35);
-    //Stage.update();
+    Stage.update();
 }
 
 function init()
