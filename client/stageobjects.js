@@ -88,7 +88,6 @@ function _StageObjects()
         this.bloodList = [];
     }
     this.addName = function(name){
-        console.log("Adding the name");
         n = new createjs.Text(name.text, "12px Arial", "#ffffff");
         n.textAlign = "center";
         this.namesList[name.text] = n;

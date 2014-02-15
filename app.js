@@ -84,6 +84,10 @@ function serverListener()
             GS.processUserAttack(user);
         })
 
+        s.on("MessageSentByUser", function(message){
+            GS.processMessage(s.id, message);
+        })
+
         s.on("disconnect", function(){
             //Updates the online tag
             //serv_io.sockets.emit("online", {online: clients});

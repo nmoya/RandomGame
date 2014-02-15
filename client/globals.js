@@ -7,9 +7,10 @@ var UserList          = {};
 var Player            = null;
 var StageObjects      = null;
 var GameState         = null;
+var Text_input        = false;
 
-var Image_Path        = "./images/";
-var Sound_Path        = "./sounds/";
+var Image_Path        = "./assets/images/";
+var Sound_Path        = "./assets/sounds/";
 var last_user_removed = null;
 var latencyLabel      = '';
 

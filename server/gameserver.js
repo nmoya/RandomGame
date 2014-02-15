@@ -108,6 +108,16 @@ module.exports = {
                 serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "MASSACRE!", timeout: 750});
         }
     },
+    processMessage: function(socket_id, message) {
+        var setNamePatt = new RegExp("\setname \\w","i");
+        if (setNamePatt.test(message.text))
+        {
+            //GameState.Users[socket_id].name.text = message.text.substring(9, message.text.length);
+            serv_io.sockets.emit("MessageReceived", "[SERVER]: TO BE DONE");// + message.name + " changed to " + GameState.Users[socket_id].name.text);
+        }
+        else
+            serv_io.sockets.emit("MessageReceived", message.name + ": " + message.text);
+    },
     createGameState: function(level)
     {
         GameState.uid = 1;

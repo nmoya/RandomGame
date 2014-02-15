@@ -1,0 +1,22 @@
+
+.text-history {
+    position: absolute;
+    top: 70%;
+    left: 1%;
+    opacity: 0.4;
+    width: 40em;
+    height: 15em;
+    resize: none;
+    display: none;
+}
+
+.text-input {
+    position: absolute;
+    top: 92%;
+    left: 1%;
+    opacity: 0.4;
+    width: 40em;
+    height: 4em;
+    resize: none;
+    display: none;
+}

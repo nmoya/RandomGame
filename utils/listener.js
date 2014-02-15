@@ -37,6 +37,15 @@ function listen()
         }
     });
 
+    socket.on("MessageReceived", function (message) {
+        $(".text-history").val($(".text-history").val() + "\n" + message);
+        $(".text-history").stop();
+        $(".text-history").show();
+        setTimeout(function(){
+            $(".text-history").hide(1000);
+        }, 2000);
+    });
+
     socket.on("reset", function()
     {   
         for (var en in EnemiesList)

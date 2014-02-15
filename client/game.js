@@ -27,6 +27,7 @@ function main(GameState)
 
     window.addEventListener('keyup', function(event) { Key.onKeyup(event); }, false);
     window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
+    window.addEventListener('keydown', function(event) { Key.textInputOn(event); }, false);
 
     loading_rect = new createjs.Shape();
     loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2)+50, Canvas.height*0.77, 10, 35);
@@ -165,6 +166,7 @@ function gameLoop()
                 EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
             }
         }
+
         //if (GameState.crown_position)
         StageObjects.update(GameState);
         StageObjects.updateName(Player.name);
