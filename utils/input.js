@@ -44,7 +44,6 @@ var Key = {
       }
       else {
         $(".text-history").show(100);
-
         $(".text-input").show(100, function(){
           $(".text-input").val("");
           $(".text-input").focus();

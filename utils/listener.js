@@ -49,7 +49,9 @@ function listen()
     socket.on("MessageReceived", function (message) {
         $(".text-history").val($(".text-history").val() + "\n" + message);
         $(".text-history").stop();
-        $(".text-history").show();
+        $(".text-history").show(0, function(){
+            $('.text-history').scrollTop($('.text-history')[0].scrollHeight);
+        });
         setTimeout(function(){
             if (!Text_input)
                 $(".text-history").hide(1000);
