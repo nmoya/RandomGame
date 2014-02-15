@@ -21,13 +21,16 @@ function listen()
     //Set the game state to only one user.
     socket.on("setGameState", function (gs) {
         GameState = gs;
+        latency = Date.now() - GameState.time;
+        latencyLabel.text = Math.floor(latency) + " ms";
+        
         if (Player.name === null)
             StageObjects.addName(GameState.Users[Player.id].name);
         Player.name = GameState.Users[Player.id].name;
         delete GameState.Users[Player.id];
     });
 
-    socket.on("user_disconnected", function (user_id) {
+    socket.on("UserDisconnected", function (user_id) {
         if (typeof UserList[user_id] != "undefined")
         {
             Stage.removeChild(UserList[user_id].obj);
@@ -60,22 +63,22 @@ function listen()
         EnemiesList = {};
     });
 
-    socket.on("insert_blood", function(pos){
+    socket.on("LeaderHit", function(pos){
         if (StageObjects)
             StageObjects.addBlood(pos);
     })
 
-    socket.on("send_message", function(data){
+    socket.on("StageMessage", function(data){
          placeMessage(data.x, data.y, data.message, data.timeout);
     })
     
-    setInterval(function(){
+    /*setInterval(function(){
         socket.emit("ping_receive", GameState.time);
     }, 1000);
 
     socket.on("send_latency", function(latency){
-        latencyLabel.text = Math.floor(latency/2) + " ms";
-    })
+        
+    })*/
 
 }
 

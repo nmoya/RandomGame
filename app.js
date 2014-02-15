@@ -101,10 +101,10 @@ function serverListener()
 
         })
         
-        s.on("ping_receive", function(time){
+        /*s.on("ping_receive", function(time){
             difference = Date.now()-time;
             s.emit("send_latency", difference);
-        })
+        })*/
     
     });
 }

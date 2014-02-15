@@ -57,7 +57,7 @@ module.exports = {
     destroyUser: function(socket_id){
         delete GameState.Users[socket_id];
         delete socket_list[socket_id];
-        serv_io.sockets.emit("user_disconnected", socket_id);
+        serv_io.sockets.emit("UserDisconnected", socket_id);
         if (GameState.leader == socket_id && clients > 0)
         {
             GameState.leader = leader_election();
@@ -91,21 +91,21 @@ module.exports = {
         if (GameState.aliveEnemies > 0)
         {
             if (hit_count == 2)
-                serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "DOUBLE KILL", timeout: 750});
+                serv_io.sockets.emit("StageMessage", {x: 0.8, y: 0.1, message: "DOUBLE KILL", timeout: 750});
             else if (hit_count == 3)
-                serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "TRIPLE KILL", timeout: 750});
+                serv_io.sockets.emit("StageMessage", {x: 0.8, y: 0.1, message: "TRIPLE KILL", timeout: 750});
             else if (hit_count == 4)
-                serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "QUADRA KILL", timeout: 750});
+                serv_io.sockets.emit("StageMessage", {x: 0.8, y: 0.1, message: "QUADRA KILL", timeout: 750});
             else if (hit_count == 5)
-                serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "PENTA KILL", timeout: 750});
+                serv_io.sockets.emit("StageMessage", {x: 0.8, y: 0.1, message: "PENTA KILL", timeout: 750});
             else if (hit_count == 6)
-                serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "HEXA KILL", timeout: 750});
+                serv_io.sockets.emit("StageMessage", {x: 0.8, y: 0.1, message: "HEXA KILL", timeout: 750});
             else if (hit_count == 7)
-                serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "HEPTA KILL", timeout: 750});
+                serv_io.sockets.emit("StageMessage", {x: 0.8, y: 0.1, message: "HEPTA KILL", timeout: 750});
             else if (hit_count == 8)
-                serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "OCTO KILL", timeout: 750});
+                serv_io.sockets.emit("StageMessage", {x: 0.8, y: 0.1, message: "OCTO KILL", timeout: 750});
             else if (hit_count >= 9)
-                serv_io.sockets.emit("send_message", {x: 0.8, y: 0.1, message: "MASSACRE!", timeout: 750});
+                serv_io.sockets.emit("StageMessage", {x: 0.8, y: 0.1, message: "MASSACRE!", timeout: 750});
         }
     },
     processMessage: function(socket_id, message) {
@@ -161,7 +161,7 @@ module.exports = {
                                    common.randomInt(GameState.config.Enemy.min_speed, GameState.config.Enemy.max_speed),
                                     'user_enemy', "idle");
         }
-        socket_list[GameState.leader].emit("send_message", {x: 0.5, y:0.5, message: "You are the leader!", timeout: 3000});
+        socket_list[GameState.leader].emit("StageMessage", {x: 0.5, y:0.5, message: "You are the leader!", timeout: 3000});
         serverinterval = setInterval(serverloop, 1000/GameState.config.Game.max_fps);
     },
     destroyGameState: function() {
@@ -208,13 +208,13 @@ function setCrownPosition(user)
 function GameOver(callback) {
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
-    serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "GAME OVER! The leader died.", timeout: 3000});
+    serv_io.sockets.emit("StageMessage", {x: 0.5, y: 0.5, message: "GAME OVER! The leader died.", timeout: 3000});
     module.exports.createGameState(1);
 }
 function NextLevel(){
     clearInterval(serverinterval);
     serv_io.sockets.emit("reset");
-    serv_io.sockets.emit("send_message", {x: 0.5, y: 0.5, message: "Level Complete", timeout: 3000});
+    serv_io.sockets.emit("StageMessage", {x: 0.5, y: 0.5, message: "Level Complete", timeout: 3000});
     module.exports.createGameState(GameState.level+1);
 }
 
@@ -268,7 +268,7 @@ function ServerEnemy(x, y, life, speed, type, current_animation)
 
         if (this.life > 0 && common.euclidean_distance(this, leader) < GameState.config.Enemy.attack_radius)
         {
-            serv_io.sockets.emit("insert_blood", {x: leader.x, y: leader.y});
+            serv_io.sockets.emit("LeaderHit", {x: leader.x, y: leader.y});
             GameState.aliveEnemies -= 1;
             this.life = 0;
             GameState.config.Player.leader_speed = Math.floor(GameState.config.Player.leader_speed / 2);
