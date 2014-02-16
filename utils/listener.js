@@ -21,14 +21,6 @@ function listen()
     //Set the game state to only one user.
     socket.on("setGameState", function (gs) {
         GameState = gs;
-        /*
-        *Time it took for the mesage that was sent from the server to get here.
-        *Considering that you sent an action, there is the time of this action message
-        *plus the server response. Assuming the same time, I multiply latency by 2.
-        */
-        latency = Date.now() - GameState.time;
-        latencyLabel.text = Math.floor(latency*2) + " ms";  
-        
         if (Player.name === null)
             StageObjects.addName(GameState.Users[Player.id].name);
 
@@ -79,6 +71,15 @@ function listen()
 
     socket.on("StageMessage", function(data){
          placeMessage(data.x, data.y, data.message, data.timeout);
+    })
+
+    setInterval(function(){
+        latency_time = Date.now();
+        socket.emit("PingMeasurement");
+    })
+    socket.on("PingReply", function(){
+        latency_time = Date.now() - latency_time;
+        latencyLabel.text = Math.floor(latency_time) + " ms";  
     })
     
 }

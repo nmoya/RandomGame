@@ -100,6 +100,10 @@ function serverListener()
                 GS.destroyGameState();
 
         })
+
+        s.on("PingMeasurement", function(){
+            s.emit("PingReply");
+        })
     
     });
 }
