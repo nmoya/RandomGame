@@ -76,7 +76,7 @@ function listen()
     setInterval(function(){
         latency_time = Date.now();
         socket.emit("PingMeasurement");
-    })
+    }, 2500);
     socket.on("PingReply", function(){
         latency_time = Date.now() - latency_time;
         latencyLabel.text = Math.floor(latency_time) + " ms";  
