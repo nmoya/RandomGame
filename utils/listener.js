@@ -21,12 +21,14 @@ function listen()
     //Set the game state to only one user.
     socket.on("setGameState", function (gs) {
         GameState = gs;
-        if (Player.name === null)
-            StageObjects.addName(GameState.Users[Player.id].name);
-
-        Player.name = GameState.Users[Player.id].name;
         delete GameState.Users[Player.id];
     });
+
+    socket.on("ChangeName", function(oldname, newname, sid){
+        if (Player.id == sid)
+            Player.name = newname;
+        StageObjects.changeName(oldname, newname);
+    })
 
     socket.on("UserDisconnected", function (user_id) {
         if (typeof UserList[user_id] != "undefined")

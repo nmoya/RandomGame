@@ -100,6 +100,11 @@ function _StageObjects()
         Stage.removeChild(this.namesList[name.text]);
         delete this.namesList[name.text];
     }
+    this.changeName = function(oldname, newname)
+    {
+        this.removeName({text: oldname});
+        this.addName(newname);
+    }
     this.updateName = function(name, x, y){
         common.setPos(this.namesList[name.text], x, y);
     }

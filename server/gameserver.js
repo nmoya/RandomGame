@@ -51,7 +51,9 @@ module.exports = {
                                       y: CONFIG.Player.start_pos[1],
                                       current_animation: "idle",
                                       name: {text: randomName(), x: 0, y: 0}};
-        socket.emit("receiveName", GameState.Users[socket_id].name);
+        setTimeout(function(){
+            serv_io.sockets.emit("ChangeName", "", GameState.Users[socket_id].name, socket_id);
+        }, 1500);
         socket_list[socket_id] = socket;
     },
     destroyUser: function(socket_id){
@@ -114,8 +116,9 @@ module.exports = {
         var setNamePatt = new RegExp("\setname \\w","i");
         if (setNamePatt.test(message.text))
         {
-            //GameState.Users[socket_id].name.text = message.text.substring(9, message.text.length);
-            serv_io.sockets.emit("MessageReceived", "[SERVER]: TO BE DONE");// + message.name + " changed to " + GameState.Users[socket_id].name.text);
+            serv_io.sockets.emit("ChangeName", GameState.Users[socket_id].name.text, {text: message.text.substring(9, message.text.length), x:GameState.Users[socket_id].x, y:GameState.Users[socket_id].y}, socket_id);
+            GameState.Users[socket_id].name.text = message.text.substring(9, message.text.length);
+            serv_io.sockets.emit("MessageReceived", "[SERVER]: " + message.name + " changed to " + GameState.Users[socket_id].name.text);
         }
         else
             serv_io.sockets.emit("MessageReceived", message.name + ": " + message.text);
