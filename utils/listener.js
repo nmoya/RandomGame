@@ -26,7 +26,7 @@ function listen()
 
     socket.on("ChangeName", function(oldname, newname, sid){
         if (Player.id == sid)
-            Player.name = newname;
+            Player.name = newname;            
         StageObjects.changeName(oldname, newname);
     })
 

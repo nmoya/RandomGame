@@ -53,7 +53,7 @@ module.exports = {
                                       name: {text: randomName(), x: 0, y: 0}};
         setTimeout(function(){
             serv_io.sockets.emit("ChangeName", "", GameState.Users[socket_id].name, socket_id);
-        }, 1500);
+        }, 5000);
         socket_list[socket_id] = socket;
     },
     destroyUser: function(socket_id){
