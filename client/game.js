@@ -29,6 +29,7 @@ function main(GameState)
     window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
     window.addEventListener('keydown', function(event) { Key.textInputOn(event); }, false);
 
+
     loading_rect = new createjs.Shape();
     loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2)+50, Canvas.height*0.77, 10, 35);
     Stage.addChild(Background.obj);
@@ -71,6 +72,7 @@ function main(GameState)
     preload.loadManifest(manifest);
 
 }
+
 function updateLoading()
 {
     //loading_rect.graphics.beginFill("#7ba800").drawRect(Canvas.width / 2-(loading_length/2)+50, Canvas.height*0.77, loading_length*(preload.progress*100|0)/100, 35);
@@ -80,7 +82,6 @@ function updateLoading()
 function init()
 {
     document.getElementsByClassName("la-anim-10")[0].classList.remove("la-animate");
-    StageObjects = new _StageObjects();
     Stage.removeAllChildren();
     //socket.emit("client_ready");
     if (music == false)
@@ -89,7 +90,8 @@ function init()
         music = true;
     }
     var Background  = new _Background(Image_Path+"tela_01.jpg", 1920, 1200);
-
+    StageObjects = new _StageObjects();
+    
     //Assets
     latencyLabel    = new createjs.Text("-- fps", "bold 12px Arial", "#FFFFFF");
     level_label = new createjs.Text(GameState.level, "20px Arial", "#ffffff");
@@ -145,7 +147,7 @@ function gameLoop()
                     StageObjects.addName(GameState.Users[key].name);
                 }
                 common.setPos(UserList[key].obj, temp_user.x, temp_user.y);
-                StageObjects.updateName(GameState.Users[key].name);
+                StageObjects.updateName(GameState.Users[key].name, GameState.Users[key].name.x, GameState.Users[key].name.y);
                 if (UserList[key].obj.currentAnimation != temp_user.current_animation)
                     UserList[key].obj.gotoAndPlay(temp_user.current_animation);
             }
@@ -166,13 +168,11 @@ function gameLoop()
                 if (!Stage.contains(EnemiesList[key].obj))
                     Stage.addChild(EnemiesList[key].obj);
                 common.setPos(EnemiesList[key].obj, enemy.x, enemy.y);
-                EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
+                if (EnemiesList[key].obj.currentAnimation != enemy.current_animation)
+                    EnemiesList[key].obj.gotoAndPlay(enemy.current_animation);
             }
         }
-
-        //if (GameState.crown_position)
         StageObjects.update(GameState);
-        StageObjects.updateName(Player.name);
         
         Player.update();
         Stage.update();

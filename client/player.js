@@ -1,5 +1,5 @@
 function _Player (id, name)
-{   var hitDelay = 1000;
+{   var hitDelay = 750;
     var lastHit = false;
     var data = null;
     data = {
@@ -165,18 +165,20 @@ function _Player (id, name)
                 this.weapon.gotoAndPlay("right");
             }
 
-            socket.emit("send_hit", {currentAnimation: this.obj.currentAnimation,
-                                    x: this.obj.x, y: this.obj.y, damage: 100});
-
+            socket.emit("send_hit", {x: this.weapon.x, y: this.weapon.y,
+                                     damage: 100});
         }
 
         if (Key.isDown(Key.RIGHT) || Key.isDown(Key.LEFT) || Key.isDown(Key.UP) || Key.isDown(Key.DOWN))
         {
             common.setPos(this.sign, this.obj.x+5, this.obj.y+43);
+            StageObjects.updateName(this.name,
+                                    this.obj.x +GameState.config.Items.names.offset[0],
+                                    this.obj.y + GameState.config.Items.names.offset[1]);
             socket.emit("update_coords", {id: Player.id, 
                                       x: Player.obj.x,
                                       y: Player.obj.y,
                                       current_animation: Player.obj.currentAnimation});
-        }            
+        }
     };
 }

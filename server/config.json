@@ -3,13 +3,26 @@
         "leader_speed": 8,
         "regular_speed": 8,
         "attack": 100,
-        "start_pos": [700, 500]
+        "start_pos": [700, 500],
+        "bbox_owh": [4, 3, 34, 45]
     },
     "Enemy": {
-        "min_speed": 3,
-        "max_speed": 6,
-        "life": 100,
-        "attack_radius": 5
+        "common_enemy": {
+            "min_speed": 3,
+            "max_speed": 6,
+            "life": 100,
+            "attack_radius": 10,
+            "bbox_owh": [6, 7, 28, 39]
+            },
+        "flux_enemy": {
+            "acceleration": 0.350,
+            "max_speed": 12,
+            "life": 100,
+            "attack_radius": 15,
+            "bbox_owh": [6, 7, 28, 39]
+        }
+
+        
     },
     "Game": {
         "max_fps": 20,
@@ -35,6 +48,9 @@
         },
         "names": {
             "offset": [20, 57]
+        },
+        "keyboard": {
+            "bbox_owh": [0, 0, 30, 30]
         }
     }
 }

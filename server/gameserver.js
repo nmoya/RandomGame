@@ -79,9 +79,11 @@ module.exports = {
     },
     processUserAttack: function(user){
         var hit_count = 0;
+
+
         for (var i in GameState.Enemies)
         {   
-            if (GameState.Enemies[i].life > 0 && common.euclidean_distance(GameState.Enemies[i], user) < 75)
+            if (GameState.Enemies[i].life > 0 && common.euclidean_distance(user, GameState.Enemies[i]) < 75)
             {   
                 GameState.Enemies[i].life -= user.damage;
                 GameState.aliveEnemies -= 1;
@@ -131,38 +133,56 @@ module.exports = {
         GameState.Enemies = {};
         for (var i=0; i< GameState.aliveEnemies; i++)
         {   
+            var types = ['common_enemy', 'flux_enemy'];
+            var acceleration = 0.5
+            var attack_radius = 5;
+            if (i < Math.ceil(GameState.aliveEnemies * 0.25)) //Creating fluxes
+            {
+                speed = 0;
+                type = types[1];
+                acceleration = CONFIG.Enemy.flux_enemy.acceleration;
+                attack_radius = CONFIG.Enemy.flux_enemy.attack_radius;
+            }
+            else
+            {
+                attack_radius = CONFIG.Enemy.common_enemy.attack_radius;
+                speed = common.randomInt(CONFIG.Enemy.common_enemy.min_speed, CONFIG.Enemy.common_enemy.max_speed);
+                type = types[0];
+            }
             var direction = common.randomInt(0, 4);
             if (direction == 0)
             {
                 range = {
-                    x: common.randomInt(GameState.config.Game.spawn_pos["0x"][0], GameState.config.Game.spawn_pos["0x"][1]),
-                    y: common.randomInt(GameState.config.Game.spawn_pos["0y"][0], GameState.config.Game.spawn_pos["0y"][1])
+                    x: common.randomInt(CONFIG.Game.spawn_pos["0x"][0], CONFIG.Game.spawn_pos["0x"][1]),
+                    y: common.randomInt(CONFIG.Game.spawn_pos["0y"][0], CONFIG.Game.spawn_pos["0y"][1])
                 }
             }
             else if (direction == 1){
                 range = {
-                    x: common.randomInt(GameState.config.Game.spawn_pos["1x"][0], GameState.config.Game.spawn_pos["1x"][1]),
-                    y: common.randomInt(GameState.config.Game.spawn_pos["1y"][0], GameState.config.Game.spawn_pos["1y"][1])
+                    x: common.randomInt(CONFIG.Game.spawn_pos["1x"][0], CONFIG.Game.spawn_pos["1x"][1]),
+                    y: common.randomInt(CONFIG.Game.spawn_pos["1y"][0], CONFIG.Game.spawn_pos["1y"][1])
                 }
             }
             else if (direction == 2){
                 range = {
-                    x: common.randomInt(GameState.config.Game.spawn_pos["2x"][0], GameState.config.Game.spawn_pos["2x"][1]),
-                    y: common.randomInt(GameState.config.Game.spawn_pos["2y"][0], GameState.config.Game.spawn_pos["2y"][1])
+                    x: common.randomInt(CONFIG.Game.spawn_pos["2x"][0], CONFIG.Game.spawn_pos["2x"][1]),
+                    y: common.randomInt(CONFIG.Game.spawn_pos["2y"][0], CONFIG.Game.spawn_pos["2y"][1])
                 }
             }
             else{
                 range = {
-                    x: common.randomInt(GameState.config.Game.spawn_pos["3x"][0], GameState.config.Game.spawn_pos["3x"][1]),
-                    y: common.randomInt(GameState.config.Game.spawn_pos["3y"][0], GameState.config.Game.spawn_pos["3y"][1])
+                    x: common.randomInt(CONFIG.Game.spawn_pos["3x"][0], CONFIG.Game.spawn_pos["3x"][1]),
+                    y: common.randomInt(CONFIG.Game.spawn_pos["3y"][0], CONFIG.Game.spawn_pos["3y"][1])
                 }
             }
             GameState.Enemies[i] = new ServerEnemy(range.x, range.y, 100,
-                                   common.randomInt(GameState.config.Enemy.min_speed, GameState.config.Enemy.max_speed),
-                                    'user_enemy', "idle");
+                                                   [speed, speed],
+                                                   type, "idle", 
+                                                   acceleration,
+                                                   attack_radius);
         }
         socket_list[GameState.leader].emit("StageMessage", {x: 0.5, y:0.5, message: "You are the leader!", timeout: 3000});
-        serverinterval = setInterval(serverloop, 1000/GameState.config.Game.max_fps);
+        serverinterval = setInterval(serverloop, 1000/CONFIG.Game.max_fps);
     },
     destroyGameState: function() {
         clearInterval(serverinterval);
@@ -233,40 +253,86 @@ function serverloop()
 }
 
 
-function ServerEnemy(x, y, life, speed, type, current_animation)
+
+function ServerEnemy(x, y, life, speed, type, current_animation, acceleration, attack_radius)
 {
     this.x = x;
     this.y = y;
+    this.attack_radius = attack_radius;
     this.life = life;
     this.speed = speed;
     this.type = type;
+    this.acceleration = acceleration;
     this.current_animation = current_animation;
 
     this.update = function (){
         leader = getLeader();
 
-        if (this.x < leader.x)
-        {   this.x += this.speed;
-            if (this.current_animation != "right")
-                this.current_animation = "right";
+        if (this.type === 'common_enemy')
+        {
+            if (this.x + this.speed[0]/2 < leader.x)
+            {   this.x += this.speed[0];
+                if (this.current_animation != "right")
+                    this.current_animation = "right";
+            }
+            else if (this.x - this.speed[0]/2 > leader.x)
+            {   this.x -= this.speed[0];
+                if (this.current_animation != "left")
+                    this.current_animation = "left";
+            }
+            if (this.y + this.speed[1]/2 < leader.y)
+            {   this.y += this.speed[1];
+                if (this.current_animation != "down")
+                    this.current_animation = "down";
+            }
+            else if (this.y - this.speed[1]/2> leader.y)
+            {   this.y -= this.speed[1];
+                if (this.current_animation != "up")
+                    this.current_animation = "up";
+            }
         }
-        else if (this.x > leader.x)
-        {   this.x -= this.speed;
-            if (this.current_animation != "left")
-                this.current_animation = "left";
-        }
-        if (this.y < leader.y)
-        {   this.y += this.speed;
-            if (this.current_animation != "down" && this.current_animation != "right" && this.current_animation != "left")
-                this.current_animation = "down";
-        }
-        else if (this.y > leader.y)
-        {   this.y -= this.speed;
-            if (this.current_animation != "up" && this.current_animation != "right" && this.current_animation != "left")
-                this.current_animation = "up";
+        else if (this.type === 'flux_enemy')
+        {
+            MAXSPEED = CONFIG.Enemy.flux_enemy.max_speed;
+            if (this.x < leader.x)
+            {   
+                this.speed[0] += this.acceleration;
+                if (this.current_animation != "right")
+                    this.current_animation = "right";
+            }
+            else if (this.x > leader.x)
+            {   
+                this.speed[0] -= this.acceleration;
+                if (this.current_animation != "left")
+                    this.current_animation = "left";
+            }
+            if (this.speed[0] > MAXSPEED)
+                this.speed[0] = MAXSPEED;
+            else if (this.speed[0] < -MAXSPEED)
+                this.speed[0] = -MAXSPEED;
+            this.x += this.speed[0];
+
+            if (this.y < leader.y)
+            {   
+                this.speed[1] += this.acceleration;
+                if (this.current_animation != "down")
+                    this.current_animation = "down";
+            }
+            else if (this.y > leader.y)
+            {   
+                this.speed[1] -= this.acceleration;
+                if (this.current_animation != "up")
+                    this.current_animation = "up";
+            }
+            if (this.speed[1] > MAXSPEED)
+                this.speed[1] = MAXSPEED;
+            else if (this.speed[1] < -MAXSPEED)
+                this.speed[1] = -MAXSPEED;
+
+            this.y += this.speed[1];
         }
 
-        if (this.life > 0 && common.euclidean_distance(this, leader) < GameState.config.Enemy.attack_radius)
+        if (this.life > 0 && common.euclidean_distance(this, leader) < this.attack_radius)
         {
             serv_io.sockets.emit("LeaderHit", {x: leader.x, y: leader.y});
             GameState.aliveEnemies -= 1;

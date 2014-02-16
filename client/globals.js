@@ -26,12 +26,12 @@ function _Canvas(tag_object) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
-    /*this.tag.addEventListener('mousemove', function(evt) 
+    this.tag.addEventListener('mousemove', function(evt) 
     {
         var rect = this.getBoundingClientRect();
         common.setPos(Mouse, evt.clientX - rect.left, evt.clientY - rect.top);
         $("#canvasCoord").html(Mouse.x +", " + Mouse.y);
-    }, false);*/
+    }, false);
 }
 function _Background(srcpath, width, height)
 {

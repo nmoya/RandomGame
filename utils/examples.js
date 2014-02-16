@@ -24,7 +24,21 @@ if (Key.isDown(Key.S))
         createjs.Sound.setMute(true);
 }
 
-
+function normalize(vector, inf, sup)
+{
+    min = Math.min(vector[0], vector[1]);
+    max = Math.max(vector[0], vector[1]);
+    a_value = (sup-inf)/((max * 1.0 - min * 1.0)* 1.0);
+    result = [0,0];
+    if min < max
+    {
+        result[0] = ((a_value * vector[0]) - (a_value * min)) + inf;
+        result[1] = ((a_value * vector[1]) - (a_value * min)) + inf;
+        return result;
+    }
+    else
+        console.log("ERROR");
+}
 //Load sword lr
     /*data = {
         images: [Image_Path+"sword.png"],

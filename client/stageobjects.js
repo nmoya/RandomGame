@@ -55,7 +55,11 @@ function _StageObjects()
     this.update = function(GameState)
     {
         var i =0;
-        common.setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
+        if (!Player.isLeader())
+            common.setPos(this.crown, GameState.crown_position.x, GameState.crown_position.y);
+        else
+            common.setPos(this.crown, Player.obj.x+GameState.config.Items.crown.offset[0],
+                                      Player.obj.y+GameState.config.Items.crown.offset[1]);
 
         for (i=0; i < this.particlesList.length; i++)
             this.particlesList[i].update();
@@ -96,7 +100,7 @@ function _StageObjects()
         Stage.removeChild(this.namesList[name.text]);
         delete this.namesList[name.text];
     }
-    this.updateName = function(name){
-        common.setPos(this.namesList[name.text], name.x, name.y);
+    this.updateName = function(name, x, y){
+        common.setPos(this.namesList[name.text], x, y);
     }
 }
